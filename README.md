@@ -5,9 +5,8 @@ Instruction materials, data and source code for CAS R workshops.
 
 Agenda:
 
-|=======|=======|====================|==========|
 | Start | End   |  What              | How Long |
-|=======|=======|====================|==========|
+|-------|-------|--------------------|----------|
 |  9:00 |  9:15 | Introductions      | 15 min   |
 |  9:15 |  9:45 | Getting started    | 30 min   |
 |  9:45 | 10:30 | Vectors            | 45 min   |
@@ -20,4 +19,3 @@ Agenda:
 |  3:15 | 3:45  | PM break           | 30 min   |
 |  3:45 | 4:30  | Linear Models      | 45 min   |
 |  4:30 | 5:00  | Padding            | 45 min   |
-|=======|=======|====================|==========|
