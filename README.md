@@ -18,4 +18,4 @@ Agenda:
 |  2:30 | 3:15  | Simulation         | 45 min   |
 |  3:15 | 3:45  | PM break           | 30 min   |
 |  3:45 | 4:30  | Linear Models      | 45 min   |
-|  4:30 | 5:00  | Padding            | 45 min   |
+|  4:30 | 5:00  | Padding            | 30 min   |
