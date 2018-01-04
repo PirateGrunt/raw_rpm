@@ -1,4 +1,3 @@
-## ------------------------------------------------------------------------
 library(ggplot2)
 set.seed(1234)
 numGroups <- 5
@@ -24,24 +23,14 @@ df <- data.frame(Group = group
                  , stringsAsFactors = FALSE)
 
 df$y <- df$x * df$SampleLink
-
-## ------------------------------------------------------------------------
 plt <- ggplot(df, aes(x, y, color = Group)) + geom_point() 
 plt + stat_smooth(method = "lm", fullrange = TRUE, se = FALSE)
-
-## ------------------------------------------------------------------------
 fit1 <- lm(y ~ x + group, data = df)
 summary(fit1)
-
-## ------------------------------------------------------------------------
 fit2 <- lm(y ~ 0 + x + group, data = df)
 summary(fit2)
-
-## ------------------------------------------------------------------------
 fitIndividual <- lm(y ~ 0 + x:group, data = df)
 summary(fitIndividual)
-
-## ------------------------------------------------------------------------
 lstSplit <- split(df, df$Group)
 fits <- lapply(lstSplit, function(z){
   fit <- lm(y ~ 0 + x, data = z)
@@ -50,40 +39,26 @@ fits <- lapply(lstSplit, function(z){
 
 sapply(fits, coef)
 coef(fitIndividual)
-
-## ------------------------------------------------------------------------
 library(nlme)
 fitBlended <- lme(data = df, fixed = y ~ 0 + x, random = ~ 0 + x | group)
 summary(fitBlended)
 unlist(coef(fitBlended))
 coef(fitIndividual)
-
-## ------------------------------------------------------------------------
 sum(df$y - predict(fitBlended))
 sum(df$y - predict(fitIndividual))
-
-## ------------------------------------------------------------------------
 sum(df$y - link * df$x)
-
-## ------------------------------------------------------------------------
 df$IndividualPrediction <- predict(fitIndividual)
 df$BlendedPrediction <- predict(fitBlended)
 
 plt <- ggplot(df, aes(x, IndividualPrediction, color = group)) + geom_line() + geom_point(aes(y = y))
 plt + geom_line(aes(y = BlendedPrediction), linetype = "dotted")
-
-## ------------------------------------------------------------------------
 fitPooled <- lm(y ~ 0 + x, data = df)
 summary(fitPooled)
-
-## ------------------------------------------------------------------------
 df$PooledPrediction <- predict(fitPooled)
 plt <- ggplot(df, aes(x, IndividualPrediction, color = group)) + geom_line() + geom_point(aes(y = y))
 plt <- plt + geom_line(aes(y = BlendedPrediction), linetype = "dotted")
 plt <- plt + geom_line(aes(y = PooledPrediction), color = "Black")
 plt
-
-## ------------------------------------------------------------------------
 set.seed(1234)
 AY <- 2001:2010
 lags <- 1:10
@@ -111,8 +86,5 @@ df <- data.frame(Group = group
                  , stringsAsFactors = FALSE)
 
 df$y <- df$x * df$SampleLink
-
-## ------------------------------------------------------------------------
 library(raw)
 data("ppauto")
-

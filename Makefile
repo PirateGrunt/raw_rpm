@@ -32,7 +32,7 @@ $(HANDOUT_DIR)/%.docx:$(HANDOUT_DIR)/%.Rmd
 	$(KNIT_HANDOUT) 
 	
 $(SCRIPT_DIR)/%.R:$(RMD_DIR)/%.Rmd
-	Rscript -e "knitr::purl('$<', output = '$@')"
+	Rscript -e "knitr::purl('$<', output = '$@', documentation = 0)"
 	
 clean:
 	rm -f -v $(HTML_OUT)
