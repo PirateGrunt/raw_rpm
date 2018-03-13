@@ -1,0 +1,17 @@
+---
+title: 'Introduction'
+author: "Brian A. Fannin"
+---
+
+##  {.flexbox .vcenter}
+
+> "Relax and embrace the chaos that is R."
+
+Patrick Burns
+  
+[www.burns-stat.com/pages/Present/infernoishR_annotated.pdf](www.burns-stat.com/pages/Present/infernoishR_annotated.pdf)
+
+##
+
+Does everyone have R and RStudio installed?
+

@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Vectors and Lists</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/css/theme/solarized.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="..\css\revealOpts.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Vectors and Lists</h1>
+</section>
+
+<section id="introducing-vectors" class="slide level2">
+<h2>Introducing vectors</h2>
+<p>In R, every variable is a vector. Think of a set of contiguous cells in a spreadsheet.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+e  &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)
+X1 &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span></code></pre></div>
+<p>Here, <code>e</code> is a vector with <code>N</code> values. <code>X1</code> is the sequence of integers from 1 through 10.</p>
+<p>Vectors can grow and shrink automatically. No need to move cells around on a sheet. No need to copy formulas or change named ranges.</p>
+</section>
+<section id="vector-properties" class="slide level2">
+<h2>Vector properties</h2>
+<ul>
+<li>Every element in a vector must be the same type.
+<ul>
+<li>R will change data types if they are not!</li>
+<li>Different types are possible by using a list or a data frame (later)</li>
+</ul></li>
+<li>Vectors have one dimension
+<ul>
+<li>Higher dimensions are possible via matrices and arrays</li>
+</ul></li>
+<li>Possible to add metadata (like names) via attributes</li>
+</ul>
+</section>
+<section id="vector-construction" class="slide level2">
+<h2>Vector construction</h2>
+<p>Vectors are constructed in one of several ways:</p>
+<ul>
+<li>Return from a function or operation
+<ul>
+<li><code>seq</code>, <code>rep</code>, <code>sample</code>, <code>rnorm</code>, etc.</li>
+</ul></li>
+<li>Concatenation</li>
+<li>Growth by assignment</li>
+</ul>
+</section>
+<section id="seq" class="slide level2">
+<h2><code>seq</code></h2>
+<p><code>seq</code> is used often to generate a sequence of values. The colon operator <code>:</code> is a shortcut for a sequence of integers.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pies =<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">by =</span> pi, <span class="dt">length.out =</span> <span class="dv">5</span>)
+i &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">5</span>
+year =<span class="st"> </span><span class="dv">2000</span><span class="op">:</span><span class="dv">2004</span></code></pre></div>
+<p><img src="vectors_files/figure-revealjs/unnamed-chunk-3-1.png" width="768" /></p>
+</section>
+<section id="rep" class="slide level2">
+<h2><code>rep</code></h2>
+<p>The <code>rep</code> function will replicate its input</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i =<span class="st"> </span><span class="kw">rep</span>(pi, <span class="dv">100</span>)
+<span class="kw">head</span>(i)</code></pre></div>
+<pre><code>## [1] 3.141593 3.141593 3.141593 3.141593 3.141593 3.141593</code></pre>
+</section>
+<section id="concatenation" class="slide level2">
+<h2>Concatenation</h2>
+<p>The <code>c()</code> function will concatenate values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)
+j &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>)
+k &lt;-<span class="st"> </span><span class="kw">c</span>(i, j)
+l &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">6</span><span class="op">:</span><span class="dv">10</span>)</code></pre></div>
+<p><img src="vectors_files/figure-revealjs/unnamed-chunk-6-1.png" width="768" /><img src="vectors_files/figure-revealjs/unnamed-chunk-6-2.png" width="768" /><img src="vectors_files/figure-revealjs/unnamed-chunk-6-3.png" width="768" /></p>
+</section>
+<section id="growth-by-assignment" class="slide level2">
+<h2>Growth by assignment</h2>
+<p>Assigning a value beyond a vectors limits will automatically grow the vector. Interim values are assigned <code>NA</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>
+i[<span class="dv">30</span>] =<span class="st"> </span>pi
+i</code></pre></div>
+<pre><code>##  [1]  1.000000  2.000000  3.000000  4.000000  5.000000  6.000000  7.000000
+##  [8]  8.000000  9.000000 10.000000        NA        NA        NA        NA
+## [15]        NA        NA        NA        NA        NA        NA        NA
+## [22]        NA        NA        NA        NA        NA        NA        NA
+## [29]        NA  3.141593</code></pre>
+</section>
+<section id="vector-access---by-index" class="slide level2">
+<h2>Vector access - by index</h2>
+<p>Vectors may be accessed by their numeric indices. Remember, ‘:’ is shorthand to generate a sequence.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+e &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)
+e[<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] -1.207066</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]</code></pre></div>
+<pre><code>## [1] -1.2070657  0.2774292  1.0844412 -2.3456977</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">e[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)]</code></pre></div>
+<pre><code>## [1] -1.207066  1.084441</code></pre>
+</section>
+<section id="vector-access---logical-access" class="slide level2">
+<h2>Vector access - logical access</h2>
+<p>Vectors may be accessed logically. This may be done by passing in a logical vector, or a logical expression.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i =<span class="st"> </span><span class="dv">5</span><span class="op">:</span><span class="dv">9</span>
+i[<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>)]</code></pre></div>
+<pre><code>## [1] 5 9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i[i <span class="op">&gt;</span><span class="st"> </span><span class="dv">7</span>]</code></pre></div>
+<pre><code>## [1] 8 9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b =<span class="st"> </span>i <span class="op">&gt;</span><span class="st"> </span><span class="dv">7</span>
+b</code></pre></div>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE  TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i[b]</code></pre></div>
+<pre><code>## [1] 8 9</code></pre>
+</section>
+<section id="which" class="slide level2">
+<h2><code>which</code></h2>
+<p>The <code>which</code> function returns indices that match a logical expression.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i &lt;-<span class="st"> </span><span class="dv">11</span><span class="op">:</span><span class="dv">20</span>
+<span class="kw">which</span>(i <span class="op">&gt;</span><span class="st"> </span><span class="dv">12</span>)</code></pre></div>
+<pre><code>## [1]  3  4  5  6  7  8  9 10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">i[<span class="kw">which</span>(i <span class="op">&gt;</span><span class="st"> </span><span class="dv">12</span>)]</code></pre></div>
+<pre><code>## [1] 13 14 15 16 17 18 19 20</code></pre>
+</section>
+<section id="sample" class="slide level2">
+<h2><code>sample</code></h2>
+<p>The <code>sample</code> function will generate a random sample. Great to use for randomizing a vector.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">months &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;January&quot;</span>, <span class="st">&quot;February&quot;</span>, <span class="st">&quot;March&quot;</span>, <span class="st">&quot;April&quot;</span>
+            , <span class="st">&quot;May&quot;</span>, <span class="st">&quot;June&quot;</span>, <span class="st">&quot;July&quot;</span>, <span class="st">&quot;August&quot;</span>
+            , <span class="st">&quot;September&quot;</span>, <span class="st">&quot;October&quot;</span>, <span class="st">&quot;November&quot;</span>, <span class="st">&quot;December&quot;</span>)
+
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+mixedMonths &lt;-<span class="st"> </span><span class="kw">sample</span>(months)
+<span class="kw">head</span>(mixedMonths)</code></pre></div>
+<pre><code>## [1] &quot;February&quot; &quot;July&quot;     &quot;November&quot; &quot;June&quot;     &quot;October&quot;  &quot;May&quot;</code></pre>
+<p>Get lots of months with the <code>size</code> parameter:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+lotsOfMonths &lt;-<span class="st"> </span><span class="kw">sample</span>(months, <span class="dt">size =</span> <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+<span class="kw">head</span>(lotsOfMonths)</code></pre></div>
+<pre><code>## [1] &quot;February&quot; &quot;August&quot;   &quot;August&quot;   &quot;August&quot;   &quot;November&quot; &quot;August&quot;</code></pre>
+</section>
+<section id="sample-ii" class="slide level2">
+<h2><code>sample</code> II</h2>
+<p>Sample may also be used within the indexing of the vector itself:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+moreMonths &lt;-<span class="st"> </span>months[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>, <span class="dt">size=</span><span class="dv">100</span>)]
+<span class="kw">head</span>(moreMonths)</code></pre></div>
+<pre><code>## [1] &quot;February&quot; &quot;August&quot;   &quot;August&quot;   &quot;August&quot;   &quot;November&quot; &quot;August&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cleaner with sample.int</span>
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+evenMoreMonths &lt;-<span class="st"> </span>months[<span class="kw">sample.int</span>(<span class="kw">length</span>(months), <span class="dt">size=</span><span class="dv">100</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)]
+<span class="kw">head</span>(evenMoreMonths)</code></pre></div>
+<pre><code>## [1] &quot;February&quot; &quot;August&quot;   &quot;August&quot;   &quot;August&quot;   &quot;November&quot; &quot;August&quot;</code></pre>
+</section>
+<section id="order" class="slide level2">
+<h2><code>order</code></h2>
+<p>The function <code>order</code> will return the indices of the vector in order.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+x</code></pre></div>
+<pre><code>##  [1]  2  6  5  8  9  4  1  7 10  3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">order</span>(x)</code></pre></div>
+<pre><code>##  [1]  7  1 10  6  3  2  8  4  5  9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x[<span class="kw">order</span>(x)]</code></pre></div>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+</section>
+<section id="vector-arithmetic" class="slide level2">
+<h2>Vector arithmetic</h2>
+<p>Vectors may be used in arithmetic operations.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">B0 &lt;-<span class="st"> </span><span class="dv">5</span>
+B1 &lt;-<span class="st"> </span><span class="fl">1.5</span>
+
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+e &lt;-<span class="st"> </span><span class="kw">rnorm</span>(N, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)
+X1 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>),<span class="dv">10</span>)
+
+Y &lt;-<span class="st"> </span>B0 <span class="op">+</span><span class="st"> </span>B1 <span class="op">*</span><span class="st"> </span>X1 <span class="op">+</span><span class="st"> </span>e</code></pre></div>
+<p>Y is now a vector with length equal to the longest vector used in the calculation.</p>
+<p>Question: B0 and B1 are vectors of length 1.</p>
+<p>X1 and e are vectors of length 100.</p>
+<p>How are they combined?</p>
+</section>
+<section id="recycling" class="slide level2">
+<h2>Recycling</h2>
+<p>R will “recycle” vectors until there are enough elements to perform an operation. Everything gets as “long” as the longest vector in the operation. For scalar operations on a vector this doesn’t involve any drama. Try the following code:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">vector1 =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>
+vector2 =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">5</span>
+scalar =<span class="st"> </span><span class="dv">3</span>
+
+<span class="kw">print</span>(vector1 <span class="op">+</span><span class="st"> </span>scalar)</code></pre></div>
+<pre><code>##  [1]  4  5  6  7  8  9 10 11 12 13</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(vector2 <span class="op">+</span><span class="st"> </span>scalar)</code></pre></div>
+<pre><code>## [1] 4 5 6 7 8</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(vector1 <span class="op">+</span><span class="st"> </span>vector2)</code></pre></div>
+<pre><code>##  [1]  2  4  6  8 10  7  9 11 13 15</code></pre>
+</section>
+<section id="set-theory---part-i" class="slide level2">
+<h2>Set theory - Part I</h2>
+<p>The <code>%in%</code> operator will return a logical vector indicating whether or not an element of the first set is contained in the second set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>
+y &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">:</span><span class="dv">15</span>
+x <span class="op">%in%</span><span class="st"> </span>y</code></pre></div>
+<pre><code>##  [1] FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE</code></pre>
+</section>
+<section id="set-theory---part-ii" class="slide level2">
+<h2>Set theory - Part II</h2>
+<ul>
+<li><code>union</code></li>
+<li><code>intersect</code></li>
+<li><code>setdiff</code></li>
+<li><code>setequal</code></li>
+<li><code>is.element</code></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">?union</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1900</span><span class="op">:</span><span class="dv">1910</span>
+y &lt;-<span class="st"> </span><span class="dv">1905</span><span class="op">:</span><span class="dv">1915</span>
+<span class="kw">intersect</span>(x, y)</code></pre></div>
+<pre><code>## [1] 1905 1906 1907 1908 1909 1910</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setdiff</span>(x, y)</code></pre></div>
+<pre><code>## [1] 1900 1901 1902 1903 1904</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setequal</span>(x, y)</code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.element</span>(<span class="dv">1941</span>, y)</code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+</section>
+<section id="summarization" class="slide level2">
+<h2>Summarization</h2>
+<p>Loads of functions take vector input and return scalar output. Translation of a large sest of numbers into a few, informative values is one of the cornerstones of statistics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">50</span>
+<span class="kw">sum</span>(x)
+<span class="kw">mean</span>(x)
+<span class="kw">max</span>(x)
+<span class="kw">length</span>(x)
+<span class="kw">var</span>(x)</code></pre></div>
+</section>
+<section id="vectors" class="slide level2">
+<h2>Vectors</h2>
+<p>Vectors are like atoms. If you understand vectors- how to create them, how to manipulate them, how to access the elements, you’re well on your way to grasping how to handle other objects in R.</p>
+<p>Vectors may combine to form molecules, but fundamentally, <em>everything</em> in R is a vector.</p>
+</section>
+<section id="exercise---vectors" class="slide level2">
+<h2>Exercise - Vectors</h2>
+<p>Create a vector of length 10, with years starting from 1980.</p>
+<p>Create a vector with values from 1972 to 2012 in increments of four (1972, 1976, 1980, etc.)</p>
+<p>Construct the following vectors (feel free to use the <code>VectorQuestion.R</code> script):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FirstName &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Richard&quot;</span>, <span class="st">&quot;James&quot;</span>, <span class="st">&quot;Ronald&quot;</span>, <span class="st">&quot;Ronald&quot;</span>
+              , <span class="st">&quot;George&quot;</span>, <span class="st">&quot;William&quot;</span>, <span class="st">&quot;William&quot;</span>, <span class="st">&quot;George&quot;</span>
+              , <span class="st">&quot;George&quot;</span>, <span class="st">&quot;Barack&quot;</span>, <span class="st">&quot;Barack&quot;</span>)
+LastName &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Nixon&quot;</span>, <span class="st">&quot;Carter&quot;</span>, <span class="st">&quot;Reagan&quot;</span>, <span class="st">&quot;Reagan&quot;</span>
+              , <span class="st">&quot;Bush&quot;</span>, <span class="st">&quot;Clinton&quot;</span>, <span class="st">&quot;Clinton&quot;</span>, <span class="st">&quot;Bush&quot;</span>
+              , <span class="st">&quot;Bush&quot;</span>, <span class="st">&quot;Obama&quot;</span>, <span class="st">&quot;Obama&quot;</span>)
+ElectionYear &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1972</span>, <span class="dv">2012</span>, <span class="dv">4</span>)</code></pre></div>
+<ul>
+<li>List the last names in alphabetical order</li>
+<li>List the years in order by first name.</li>
+<li>Create a vector of years when someone named “George” was elected.</li>
+<li>How many Georges were elected before 1996?</li>
+<li>Generate a random sample of 100 presidents.</li>
+</ul>
+</section>
+<section id="answer" class="slide level2">
+<h2>Answer</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">LastName[<span class="kw">order</span>(LastName)]</code></pre></div>
+<pre><code>##  [1] &quot;Bush&quot;    &quot;Bush&quot;    &quot;Bush&quot;    &quot;Carter&quot;  &quot;Clinton&quot; &quot;Clinton&quot; &quot;Nixon&quot;  
+##  [8] &quot;Obama&quot;   &quot;Obama&quot;   &quot;Reagan&quot;  &quot;Reagan&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ElectionYear[<span class="kw">order</span>(FirstName)]</code></pre></div>
+<pre><code>##  [1] 2008 2012 1988 2000 2004 1976 1972 1980 1984 1992 1996</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ElectionYear[FirstName <span class="op">==</span><span class="st"> &#39;George&#39;</span>]</code></pre></div>
+<pre><code>## [1] 1988 2000 2004</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myLogical &lt;-<span class="st"> </span>(FirstName <span class="op">==</span><span class="st"> &#39;George&#39;</span>) <span class="op">&amp;</span><span class="st"> </span>(ElectionYear <span class="op">&lt;</span><span class="st"> </span><span class="dv">1996</span>)
+<span class="kw">length</span>(<span class="kw">which</span>(myLogical))</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(myLogical)</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sample</span>(LastName, <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>##   [1] &quot;Bush&quot;    &quot;Clinton&quot; &quot;Reagan&quot;  &quot;Obama&quot;   &quot;Reagan&quot;  &quot;Obama&quot;   &quot;Reagan&quot; 
+##   [8] &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Carter&quot;  &quot;Nixon&quot;  
+##  [15] &quot;Reagan&quot;  &quot;Bush&quot;    &quot;Clinton&quot; &quot;Obama&quot;   &quot;Obama&quot;   &quot;Nixon&quot;   &quot;Clinton&quot;
+##  [22] &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Clinton&quot; &quot;Carter&quot;  &quot;Bush&quot;    &quot;Reagan&quot;  &quot;Reagan&quot; 
+##  [29] &quot;Obama&quot;   &quot;Bush&quot;    &quot;Clinton&quot; &quot;Bush&quot;    &quot;Reagan&quot;  &quot;Clinton&quot; &quot;Reagan&quot; 
+##  [36] &quot;Clinton&quot; &quot;Bush&quot;    &quot;Clinton&quot; &quot;Reagan&quot;  &quot;Bush&quot;    &quot;Nixon&quot;   &quot;Reagan&quot; 
+##  [43] &quot;Bush&quot;    &quot;Clinton&quot; &quot;Carter&quot;  &quot;Clinton&quot; &quot;Clinton&quot; &quot;Bush&quot;    &quot;Carter&quot; 
+##  [50] &quot;Obama&quot;   &quot;Obama&quot;   &quot;Nixon&quot;   &quot;Reagan&quot;  &quot;Nixon&quot;   &quot;Reagan&quot;  &quot;Bush&quot;   
+##  [57] &quot;Reagan&quot;  &quot;Clinton&quot; &quot;Nixon&quot;   &quot;Clinton&quot; &quot;Carter&quot;  &quot;Obama&quot;   &quot;Nixon&quot;  
+##  [64] &quot;Bush&quot;    &quot;Nixon&quot;   &quot;Clinton&quot; &quot;Bush&quot;    &quot;Nixon&quot;   &quot;Reagan&quot;  &quot;Bush&quot;   
+##  [71] &quot;Obama&quot;   &quot;Clinton&quot; &quot;Carter&quot;  &quot;Clinton&quot; &quot;Reagan&quot;  &quot;Obama&quot;   &quot;Bush&quot;   
+##  [78] &quot;Reagan&quot;  &quot;Carter&quot;  &quot;Obama&quot;   &quot;Carter&quot;  &quot;Obama&quot;   &quot;Carter&quot;  &quot;Carter&quot; 
+##  [85] &quot;Carter&quot;  &quot;Clinton&quot; &quot;Reagan&quot;  &quot;Nixon&quot;   &quot;Reagan&quot;  &quot;Bush&quot;    &quot;Nixon&quot;  
+##  [92] &quot;Clinton&quot; &quot;Reagan&quot;  &quot;Reagan&quot;  &quot;Carter&quot;  &quot;Reagan&quot;  &quot;Carter&quot;  &quot;Carter&quot; 
+##  [99] &quot;Bush&quot;    &quot;Nixon&quot;</code></pre>
+</section>
+<section id="lists" class="slide level2">
+<h2>Lists</h2>
+<p>Lists have data of arbitrary complexity. Any type, any length. Note the new <code>[[ ]]</code> double bracket operator.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">list</span>()
+<span class="kw">typeof</span>(x)</code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Hello&quot;</span>, <span class="st">&quot;there&quot;</span>, <span class="st">&quot;this&quot;</span>, <span class="st">&quot;is&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;list&quot;</span>)
+x[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(pi, <span class="kw">exp</span>(<span class="dv">1</span>))
+<span class="kw">summary</span>(x)</code></pre></div>
+<pre><code>##      Length Class  Mode     
+## [1,] 6      -none- character
+## [2,] 2      -none- numeric</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(x)</code></pre></div>
+<pre><code>## List of 2
+##  $ : chr [1:6] &quot;Hello&quot; &quot;there&quot; &quot;this&quot; &quot;is&quot; ...
+##  $ : num [1:2] 3.14 2.72</code></pre>
+</section>
+<section id="lists-1" class="slide level2">
+<h2>Lists</h2>
+<p><img src="vectors_files/figure-revealjs/unnamed-chunk-24-1.png" width="768" /></p>
+</section>
+<section id="vs." class="slide level2">
+<h2>[ vs. [[</h2>
+<p><code>[</code> is (almost always) used to set and return an element of the same type as the <em>containing</em> object.</p>
+<p><code>[[</code> is used to set and return an element of the same type as the <em>contained</em> object.</p>
+<p>This is why we use <code>[[</code> to set an item in a list.</p>
+<p>Don’t worry if this doesn’t make sense yet. It’s difficult for most R programmers.</p>
+</section>
+<section id="recursive-storage" class="slide level2">
+<h2>Recursive storage</h2>
+<p>Lists can contain other lists as elements.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">list</span>()
+y[[<span class="dv">1</span>]] &lt;-<span class="st"> &quot;Lou Reed&quot;</span>
+y[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="dv">45</span>
+
+x[[<span class="dv">3</span>]] &lt;-<span class="st"> </span>y</code></pre></div>
+<p><img src="vectors_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" /></p>
+</section>
+<section id="list-metadata" class="slide level2">
+<h2>List metadata</h2>
+<p>Again, typically names. However, these become very important for lists. Names are handled with the special <code>$</code> operator. <code>$</code> permits access to a single element. (A single element of a list can be a vector!)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Lou Reed&quot;</span>, <span class="st">&quot;Patti Smith&quot;</span>)
+y[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">45</span>, <span class="dv">63</span>)
+
+<span class="kw">names</span>(y) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Artist&quot;</span>, <span class="st">&quot;Age&quot;</span>)
+
+y<span class="op">$</span>Artist</code></pre></div>
+<pre><code>## [1] &quot;Lou Reed&quot;    &quot;Patti Smith&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y<span class="op">$</span>Age</code></pre></div>
+<pre><code>## [1] 45 63</code></pre>
+</section>
+<section id="lapply" class="slide level2">
+<h2><code>lapply</code></h2>
+<p><code>lapply</code> is one of many functions which may be applied to lists. Can be difficult at first, but very powerful. Applies the same function to each element of a list.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myList &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">firstVector =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+               , <span class="dt">secondVector =</span> <span class="kw">c</span>(<span class="dv">89</span>, <span class="dv">56</span>, <span class="dv">84</span>, <span class="dv">298</span>, <span class="dv">56</span>)
+               , <span class="dt">thirdVector =</span> <span class="kw">c</span>(<span class="dv">7</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">2</span>))
+<span class="kw">lapply</span>(myList, mean)</code></pre></div>
+<pre><code>## $firstVector
+## [1] 5.5
+## 
+## $secondVector
+## [1] 116.6
+## 
+## $thirdVector
+## [1] 4.142857</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(myList, median)</code></pre></div>
+<pre><code>## $firstVector
+## [1] 5.5
+## 
+## $secondVector
+## [1] 84
+## 
+## $thirdVector
+## [1] 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(myList, sum)</code></pre></div>
+<pre><code>## $firstVector
+## [1] 55
+## 
+## $secondVector
+## [1] 583
+## 
+## $thirdVector
+## [1] 29</code></pre>
+</section>
+<section id="why-lapply" class="slide level2">
+<h2>Why <code>lapply</code>?</h2>
+<p>Two reasons:</p>
+<ol type="1">
+<li>It’s expressive. A loop is a lot of code which does little to clarify intent. <code>lapply</code> indicates that we want to apply the same function to each element of a list. Think of a formula that exists as a column in a spreadsheet.</li>
+<li>It’s easier to type at an interactive console. In its very early days, <code>S</code> was fully interactive. Typing a <code>for</code> loop at the console is a tedius and unnecessary task.</li>
+</ol>
+</section>
+<section id="summary-functions" class="slide level2">
+<h2>Summary functions</h2>
+<p>Because lists are arbitrary, we can’t expect functions like <code>sum</code> or <code>mean</code> to work. Use <code>lapply</code> to summarize particular list elements.</p>
+</section>
+<section id="list-questions" class="slide level2">
+<h2>List Questions</h2>
+<ul>
+<li>Create a list with two elements. Have the first element be a vector with 100 numbers. Have the second element be a vector with 100 dates. Give your list the names: “Claim” and “AccidentDate”.</li>
+<li>What is the average value of a claim?</li>
+</ul>
+</section>
+<section id="answers" class="slide level2">
+<h2>Answers</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myList &lt;-<span class="st"> </span><span class="kw">list</span>()
+myList<span class="op">$</span>Claims &lt;-<span class="st"> </span><span class="kw">rlnorm</span>(<span class="dv">100</span>, <span class="kw">log</span>(<span class="dv">10000</span>))
+myList<span class="op">$</span>AccidentDate &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">seq.Date</span>(<span class="kw">as.Date</span>(<span class="st">&#39;2000-01-01&#39;</span>), <span class="kw">as.Date</span>(<span class="st">&#39;2009-12-31&#39;</span>), <span class="dt">length.out =</span> <span class="dv">1000</span>), <span class="dv">100</span>)
+<span class="kw">mean</span>(myList<span class="op">$</span>Claims)</code></pre></div>
+<pre><code>## [1] 18004.31</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+          { src: 'C:\Users\bfannin\Documents\raw_rpm\slides_out\vectors_files/reveal.js-3.3.0.1/plugin/zoom-js/zoom.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>
