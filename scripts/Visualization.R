@@ -1,40 +1,53 @@
-## ------------------------------------------------------------------------
-source("../scripts/BasicScript.R")
-plot(X1, Y, pch=19)
-
-## ------------------------------------------------------------------------
-plot(X1, Y, pch=19)
-lines(X1, yHat)
-
-## ----fig.height=4.5------------------------------------------------------
-hist(e)
-
-## ----fig.height=4.5------------------------------------------------------
-plot(density(e))
-
-## ----fig.height=4.5------------------------------------------------------
-boxplot(e, pch=19)
-
-## ----fig.height=4.5------------------------------------------------------
-plot(Y ~ X1, pch=19)
-
-## ----fig.height=4.5------------------------------------------------------
-colors = ifelse(abs(e) > 1.0, "red", "black")
-plot(Y ~ X1, pch=19, col=colors)
-
-## ----fig.height=4.5------------------------------------------------------
-plot(Y ~ X1, pch=19)
-lines(X1, yHat, lwd=2)
-lines(X1, yHat+1, lty="dotted", lwd=0.5)
-lines(X1, yHat-1, lty="dotted", lwd=0.5)
-
-## ------------------------------------------------------------------------
+source('common.R')
 library(raw)
-data(COTOR2)
-hist(COTOR2$Claim)
-boxplot(COTOR2$Claim)
-plot(density(COTOR2$Claim))
-plot(density(log(COTOR2$Claim)))
-hist(log(COTOR2$Claim))
-hist(COTOR2$Claim, breaks=80)
+data("RegionExperience")
 
+plot(RegionExperience$PolicyYear, RegionExperience$NumClaims)
+plot(
+  RegionExperience$PolicyYear
+  , RegionExperience$NumClaims
+  , pch = 19
+  , xlab = 'Policy Year'
+  , ylab = '# of claims')
+library(ggplot2)
+library(dplyr)
+plt_base <- ggplot(RegionExperience)
+
+plt_base
+
+data(COTOR2)
+ggplot(COTOR2)
+ggplot(1:10)
+plt_base <- plt_base + aes(x = PolicyYear, y = NumClaims)
+
+plt_base <- ggplot(RegionExperience, aes(PolicyYear, NumClaims))
+plt_base <- plt_base + geom_point()
+plt_base
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point()
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_line()
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_line(aes(color = Region))
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_smooth(method = lm, aes(color = Region))
+plt <- RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumClaims)) + 
+  geom_point()
+plt + scale_y_continuous(labels = scales::comma)
+plt + scale_x_continuous(breaks = 2001:2010)
+my_breaks <- function(lims) {
+  seq(ceiling(lims[1]), floor(lims[2]), by = 1)
+}
+plt + scale_x_continuous(breaks = my_breaks)
+ggplot(RegionExperience, aes(x = PolicyYear, y = NumClaims, color = Region)) + 
+  geom_point() + 
+  facet_wrap(~ Region)
+plt + labs(x = 'Policy year', y = '# of claims')

@@ -1,48 +1,67 @@
-plot(function(x) dnorm(x), -3, 3, ylab="Normal f(x)")
-oldpar = par(mfrow = c(2,1))
-plot(function(x) dexp(x), 0, 10, ylab="Exp f(x)")
-plot(function(x) dlnorm(x), 0, 10, ylab="LN f(x)")
-par(oldpar)
-oldpar = par(mfrow = c(3,1))
-plot(function(x) pnorm(x), -3, 3, ylab="Normal F(x)")
-plot(function(x) pexp(x), 0, 10, ylab="Exp F(x)")
-plot(function(x) plnorm(x), 0, 10, ylab="LN F(x)")
-par(oldpar)
-oldpar = par(mfrow = c(1,2))
-plot(function(x) dlnorm(x), 0, 10, ylab="f(x)")
-plot(function(x) plnorm(x), 0, 10, ylab="F(x)")
-oldpar = par(mfrow = c(3,1))
-hist(rnorm(200))
-hist(rexp(200))
-hist(rlnorm(200))
-par(oldpar)
-oldpar = par(mfrow = c(3,1))
+source('common.R')
+dist_mean <- 10e3
+dist_cv <- 2.5
+dist_sd <- dist_mean * dist_cv
+
+sims <- 5e3
+norms <- rnorm(sims, dist_mean, dist_sd)
+
+norms %>% head()
+hist(norms)
+tbl_sims <- data.frame(
+    x_exp = rexp(sims, 1 / dist_mean)
+  , x_norm = rnorm(sims, dist_mean, dist_sd)
+)
+tbl_sims %>% 
+  ggplot(aes(x = x_norm)) +
+  geom_histogram()
+tbl_sims %>% 
+  ggplot(aes(x_norm)) + 
+  geom_density()
+tbl_sims %>% 
+  ggplot() + 
+  geom_density(aes(x_exp), alpha = 0.8, fill = 'red') + 
+  geom_density(aes(x_norm), alpha = 0.8, fill = 'blue')
+plot_points <- 500
+x_lims <- dist_mean + c(-1, 1) * 3 * dist_sd
+tbl_plot <- data.frame(
+    x = seq(x_lims[1], x_lims[2], length.out = plot_points)
+  )
+tbl_plot$density_norm <- dnorm(tbl_plot$x, dist_mean, dist_sd)
+tbl_plot %>% 
+  ggplot(aes(x, density_norm)) + 
+  geom_line()
+tbl_plot$cdf_norm <- pnorm(tbl_plot$x, dist_mean, dist_sd)
+tbl_plot %>% 
+  ggplot(aes(x, cdf_norm)) + 
+  geom_line()
+tails <- c(0.95, 0.98, 0.99)
+qnorm(tails, dist_mean, dist_sd)
 set.seed(1234)
-hist(rnorm(200, mean=0, sd=1), xlim=c(-10, 10), breaks=10)
-hist(rnorm(200, mean=0, sd=4), xlim=c(-10, 10), breaks=10)
-hist(rnorm(200, mean=5, sd=2), xlim=c(-10, 10), breaks=10)
-par(oldpar)
+policy_years <- 2001:2010
+freq <- 1e3
+num_claims <- rpois(length(policy_years), freq)
+dist_means <- dist_mean * 1.05 ^ (policy_years - min(policy_years))
+
+severity <- mapply(rnorm, num_claims, dist_means, MoreArgs = list(sd = dist_sd))
+tbl_claim <- data.frame(
+    policy_year = rep(policy_years, num_claims)
+  , severity = unlist(severity))
+tbl_claim %>% 
+  ggplot(aes(severity)) + 
+  geom_density(alpha = 0.6)
+tbl_claim %>% 
+  ggplot(aes(severity, fill = as.factor(policy_year))) + 
+  geom_density(alpha = 0.6)
+tbl_claim %>% 
+  ggplot(aes(severity, fill = as.factor(policy_year))) + 
+  geom_density() + 
+  facet_wrap(~ policy_year)
+tbl_claim %>% 
+  group_by(policy_year) %>% 
+  summarise(med = median(severity))
 set.seed(1234)
 sample(1:100, 10)
-sample(1:3, prob=c(1,1,100), replace=TRUE)
+sample(1:3, prob = c(1, 1, 100), replace = TRUE)
 set.seed(1234)
 letters[sample(length(letters))]
-class <- c("A", "B", "C", "D")
-freq <- 1 / 1e5
-exposure <- 1e6 * c(35, 40, 55, 20)
-meanSeverity <- c(8, 7, 12, 10)
-set.seed(1234)
-numClaims <- rpois(length(exposure), exposure * freq)
-dfClass <- data.frame(class, exposure, meanSeverity = exp(meanSeverity), numClaims)
-
-severity <- lapply(numClaims, rlnorm, meanlog=meanSeverity)
-class <- rep(class, numClaims)
-dfClaims <- data.frame(class, severity = unlist(severity))
-severity <- 10000
-CV <- .3
-sigma <- sqrt(log(1 + CV^2))
-mu <- log(severity) - sigma^2/2
-plot(function(x) dlnorm(x), mu, sigma, ylab="LN f(x)")
-set.seed(1234)
-claims = rlnorm(100, meanlog=log(30000), sdlog=1)
-hist(claims, breaks=seq(1, 500000, length.out=40))

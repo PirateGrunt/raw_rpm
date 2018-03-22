@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
-  <title>Advanced Visualization</title>
+  <title>Visualization</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -486,204 +486,183 @@ document.getElementsByTagName('head')[0].appendChild(style);
     <div class="slides">
 
 <section>
-    <h1 class="title">Advanced Visualization</h1>
+    <h1 class="title">Visualization</h1>
 </section>
 
-<section id="topics" class="slide level2">
-<h2>Topics</h2>
+<section><section id="base-plotting" class="titleslide slide level1"><h1>Base plotting</h1></section><section id="base-plotting-1" class="slide level2">
+<h2>Base plotting</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(raw)
+## Warning: package &#39;raw&#39; was built under R version 3.4.4
+<span class="kw">data</span>(<span class="st">&quot;RegionExperience&quot;</span>)
+
+<span class="kw">plot</span>(RegionExperience<span class="op">$</span>PolicyYear, RegionExperience<span class="op">$</span>NumClaims)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-2-1.png" width="768" /></p>
+</section><section id="add-labels" class="slide level2">
+<h2>Add labels</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(
+  RegionExperience<span class="op">$</span>PolicyYear
+  , RegionExperience<span class="op">$</span>NumClaims
+  , <span class="dt">pch =</span> <span class="dv">19</span>
+  , <span class="dt">xlab =</span> <span class="st">&#39;Policy Year&#39;</span>
+  , <span class="dt">ylab =</span> <span class="st">&#39;# of claims&#39;</span>)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-3-1.png" width="768" /></p>
+</section><section id="base-plotting-2" class="slide level2">
+<h2>Base plotting</h2>
 <ul>
-<li>ggplot2</li>
-<li>Maps</li>
+<li>Kinda ugly</li>
+<li>Customization is possible, but tedious</li>
 </ul>
-</section>
-<section id="ggplot2" class="slide level2">
+</section></section>
+<section><section id="ggplot" class="titleslide slide level1"><h1>ggplot</h1></section><section id="ggplot2" class="slide level2">
 <h2>ggplot2</h2>
-<p>ggplot2 developed by Hadley Wickham, based on the “grammar of graphics”</p>
-<p>Particularly well suited for multi-dimensional, multivariate analysis.</p>
-<p>Requires 3 things:</p>
+<p>gg = “grammar of graphics” based on Leland Wilkinson</p>
 <ol type="1">
 <li>Data</li>
 <li>Mapping</li>
 <li>Geometric layers</li>
+<li>Scales</li>
 </ol>
-</section>
-<section id="data" class="slide level2">
+</section></section>
+<section><section id="data" class="titleslide slide level1"><h1>Data</h1></section><section id="data-1" class="slide level2">
 <h2>Data</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
-N &lt;-<span class="st"> </span><span class="dv">30</span>
-df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Cohort =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;F&quot;</span>, N), <span class="kw">rep</span>(<span class="st">&quot;M&quot;</span>, N))
-                 , <span class="dt">weight =</span> <span class="kw">c</span>(<span class="kw">rnorm</span>(N, <span class="dv">150</span>, <span class="dv">10</span>), <span class="kw">rnorm</span>(N, <span class="dv">172</span>, <span class="dv">10</span>))
-                 , <span class="dt">height =</span> <span class="kw">c</span>(<span class="kw">rnorm</span>(N, <span class="dv">64</span>, <span class="dv">10</span>), <span class="kw">rnorm</span>(N, <span class="dv">70</span>, <span class="dv">10</span>))
-)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(dplyr)
+plt_base &lt;-<span class="st"> </span><span class="kw">ggplot</span>(RegionExperience)
 
-<span class="kw">library</span>(ggplot2)
-basePlot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df)</code></pre></div>
-<aside class="notes">
-<p>Notice that we assigned the result of the function call to an object called <code>basePlot</code>. This means we don’t automatically get output. Take a bit of time to have a look at what’s contained in the <code>basePlot</code> object.</p>
-</aside>
-</section>
-<section id="mapping" class="slide level2">
-<h2>Mapping</h2>
-<p>Mappings bind data to visual elements. These are added with the <code>ggplot2::aes</code> function. We add the mapping to the plot object with the addition operator.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">basePlot &lt;-<span class="st"> </span>basePlot <span class="op">+</span><span class="st"> </span><span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight)</code></pre></div>
-<p>We can map other aesthetic elements, as well. We’ll also map the color of the graphic elements to the <code>Cohort</code> data element.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">basePlot &lt;-<span class="st"> </span>basePlot <span class="op">+</span><span class="st"> </span><span class="kw">aes</span>(<span class="dt">color =</span> Cohort)</code></pre></div>
-</section>
-<section id="adding-layers" class="slide level2">
-<h2>Adding layers</h2>
-<p>We’re almost there. Although we have data and we’ve mapped to elements of a coordinate system, we haven’t specified what the visual elements should be. The <code>geom_*</code> family of functions add geometric shapes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">basePlot &lt;-<span class="st"> </span>basePlot <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()
-basePlot</code></pre></div>
+plt_base</code></pre></div>
 <p><img src="visualization_files/figure-revealjs/unnamed-chunk-4-1.png" width="768" /></p>
-</section>
-<section id="typical-geoms" class="slide level2">
-<h2>Typical geoms</h2>
-<ul>
-<li>geom_line</li>
-<li>geom_point</li>
-<li>geom_bar</li>
-<li>geom_histogram</li>
-<li>geom_density</li>
-<li>geom_boxplot</li>
-</ul>
-<p>Lots of others for things like area plots, step functions, dotplots, violin plots, errorbars, etc.</p>
-</section>
-<section id="one-step" class="slide level2">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw">data</span>(COTOR2)
+<span class="kw">ggplot</span>(COTOR2)
+## Error: ggplot2 doesn&#39;t know how to deal with data of class numeric</code></pre></div>
+</section><section id="data-2" class="slide level2">
+<h2>Data</h2>
+<p>Data must use a data frame.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+## Error: ggplot2 doesn&#39;t know how to deal with data of class integer</code></pre></div>
+</section></section>
+<section><section id="mapping" class="titleslide slide level1"><h1>Mapping</h1></section><section id="mapping-1" class="slide level2">
+<h2>Mapping</h2>
+<p>Mappings bind data to visual elements. Every data-derived visual element must be mapped to data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt_base &lt;-<span class="st"> </span>plt_base <span class="op">+</span><span class="st"> </span><span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumClaims)
+
+plt_base &lt;-<span class="st"> </span><span class="kw">ggplot</span>(RegionExperience, <span class="kw">aes</span>(PolicyYear, NumClaims))</code></pre></div>
+</section></section>
+<section><section id="layers" class="titleslide slide level1"><h1>Layers</h1></section><section id="adding-layers" class="slide level2">
+<h2>Adding layers</h2>
+<p>Although we have data and we’ve mapped to elements of a coordinate system, we haven’t specified what the visual elements should be. The <code>geom_*</code> family of functions add geometric shapes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt_base &lt;-<span class="st"> </span>plt_base <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()
+plt_base</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-7-1.png" width="768" /></p>
+</section><section id="one-step" class="slide level2">
 <h2>One step</h2>
-<p>Typically we don’t do this in steps.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()
-plt</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-5-1.png" width="768" /></p>
-</section>
-<section id="nothing-wrong-with-adding-two-layers" class="slide level2">
-<h2>Nothing wrong with adding two layers</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_rug</span>()</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-6-1.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_density2d</span>()</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-6-2.png" width="768" /></p>
-</section>
-<section id="facets" class="slide level2">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RegionExperience <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumPolicies)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-8-1.png" width="768" /></p>
+</section><section id="try-multiple-layers" class="slide level2">
+<h2>Try multiple layers</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RegionExperience <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumPolicies)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>()</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-9-1.png" width="768" /></p>
+</section><section id="try-that-again" class="slide level2">
+<h2>Try that again</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RegionExperience <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumPolicies)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Region))</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-10-1.png" width="768" /></p>
+</section><section id="ggplot-vs-geom_x" class="slide level2">
+<h2>ggplot vs geom_X</h2>
+<pre><code>ggplot(data, mapping)
+geom_X(mapping, data)</code></pre>
+</section><section id="statistical-smoothers" class="slide level2">
+<h2>Statistical smoothers</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RegionExperience <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumPolicies)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> lm, <span class="kw">aes</span>(<span class="dt">color =</span> Region))</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-11-1.png" width="768" /></p>
+</section></section>
+<section><section id="scales" class="titleslide slide level1"><h1>Scales</h1></section><section id="store-a-basic-plot-in-an-object" class="slide level2">
+<h2>Store a basic plot in an object</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt &lt;-<span class="st"> </span>RegionExperience <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumClaims)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+</section><section id="change-the-y-scale" class="slide level2">
+<h2>Change the y scale</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-13-1.png" width="768" /></p>
+</section><section id="change-the-x-breaks" class="slide level2">
+<h2>Change the x breaks</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="dv">2001</span><span class="op">:</span><span class="dv">2010</span>)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-14-1.png" width="768" /></p>
+</section><section id="change-the-x-breaks-1" class="slide level2">
+<h2>Change the x breaks</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_breaks &lt;-<span class="st"> </span><span class="cf">function</span>(lims) {
+  <span class="kw">seq</span>(<span class="kw">ceiling</span>(lims[<span class="dv">1</span>]), <span class="kw">floor</span>(lims[<span class="dv">2</span>]), <span class="dt">by =</span> <span class="dv">1</span>)
+}
+plt <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> my_breaks)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-15-1.png" width="768" /></p>
+</section></section>
+<section><section id="facets" class="titleslide slide level1"><h1>Facets</h1></section><section id="facets-1" class="slide level2">
 <h2>Facets</h2>
 <p>Facets split the data into groups and draws a different plot for each group.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>Cohort)
-
-plt &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>weight)
-plt</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-7-1.png" width="768" /></p>
-</section>
-<section id="statistical-transformations" class="slide level2">
-<h2>Statistical transformations</h2>
-<p>We can also add all manner of statistical smoothers.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> height, <span class="dt">y =</span> weight, <span class="dt">color =</span> Cohort)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>)
-plt</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-8-1.png" width="768" /></p>
-<p>See <code>? stat_smooth</code> for more on smoothers.</p>
-</section>
-<section id="scales" class="slide level2">
-<h2>Scales</h2>
-<p>Scales control how things render on the plot. We must scale our numbers to the plotting device (typically a section of a computer screen.) We can also map things like color and axes to data values and control formatting.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-9-1.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt <span class="op">+</span><span class="st"> </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span><span class="kw">unit_format</span>(<span class="dt">unit =</span> <span class="st">&quot;in&quot;</span>, <span class="dt">nsmall =</span> <span class="dv">2</span>))</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-9-2.png" width="768" /></p>
-<p><em>Very</em> detailed topic, particularly when we start talking about color. Your specific problem will likely require a bit of research and experimentation. StackOverflow.com is your friend.</p>
-</section>
-<section id="other-visual-elements" class="slide level2">
-<h2>Other visual elements</h2>
-<p>Non-data elements are things like labels. Here’s a sample of a few:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(RegionExperience, <span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumClaims, <span class="dt">color =</span> Region)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>Region)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-16-1.png" width="768" /></p>
+</section></section>
+<section><section id="non-data-visual-elements" class="titleslide slide level1"><h1>Non-data visual elements</h1></section><section id="non-data-visual-elements-1" class="slide level2">
+<h2>Non-data visual elements</h2>
 <ul>
-<li><code>xlab()</code>, <code>ylab()</code> -&gt; <code>plt + ylab(&quot;This is my y label&quot;) + xlab(&quot;Here is an x label&quot;)</code></li>
-<li><code>ggtitle()</code> -&gt; <code>plt + ggtitle(&quot;Title of my plot&quot;)</code></li>
-<li><code>labs()</code> -&gt; <code>plt + labs(x = &quot;x-axis title&quot;, title = &quot;My title&quot;)</code></li>
-<li><code>theme_bw()</code>, <code>theme_minimal()</code> -&gt; <code>plt + theme_bw()</code></li>
-<li>The <code>theme()</code> function gives complete control over all non-data related visual elements</li>
-<li>Check out the <code>ggthemes</code> package</li>
+<li>labels</li>
+<li>gridlines</li>
+<li>legend</li>
+<li>axis ticks</li>
 </ul>
-<p>We won’t cover this here.</p>
-</section>
-<section id="your-turn" class="slide level2">
-<h2>Your turn</h2>
-<ol type="1">
-<li>Create a scatter plot for policy year and number of claims</li>
-<li>Color each point based on region</li>
-<li>Add a linear smoother. Which region is showing the greatest increase in claims?</li>
-<li>Form the policy frequency by taking the ratio of claims to policies. Plot this.</li>
-</ol>
-<p>Extra credit:</p>
-<ol type="1">
-<li>Use the state data to create a time series number of claims. Facet by region.</li>
-</ol>
-</section>
-<section id="answers" class="slide level2">
-<h2>Answers</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(raw)
-<span class="kw">data</span>(<span class="st">&quot;RegionExperience&quot;</span>)
-plt1 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(RegionExperience, <span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumClaims)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>()
-plt1</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-10-1.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt2 &lt;-<span class="st"> </span>plt1 <span class="op">+</span><span class="st"> </span><span class="kw">aes</span>(<span class="dt">color =</span> Region)
-plt2</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-10-2.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt3 &lt;-<span class="st"> </span>plt2 <span class="op">+</span><span class="st"> </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>)
-plt3</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-10-3.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RegionExperience<span class="op">$</span>Frequency &lt;-<span class="st"> </span><span class="kw">with</span>(RegionExperience, NumClaims <span class="op">/</span><span class="st"> </span>NumPolicies)
-
-plt4 &lt;-<span class="st"> </span><span class="kw">ggplot</span>(RegionExperience, <span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> Frequency, <span class="dt">color =</span> Region)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span><span class="kw">stat_smooth</span>(<span class="dt">method =</span> lm)
-plt4</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-10-4.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;StateExperience&quot;</span>)
-pltExtra &lt;-<span class="st"> </span><span class="kw">ggplot</span>(StateExperience, <span class="kw">aes</span>(<span class="dt">x =</span> PolicyYear, <span class="dt">y =</span> NumClaims, <span class="dt">color =</span> Postal)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>()
-pltExtra <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>Region)</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-11-1.png" width="768" /></p>
-</section>
-<section id="maps" class="slide level2">
-<h2>Maps!</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(maps)
-<span class="kw">map</span>(<span class="st">&#39;state&#39;</span>)</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-12-1.png" width="768" /></p>
-</section>
-<section id="hurricanes" class="slide level2">
-<h2>Hurricanes</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(raw)
-<span class="kw">data</span>(Hurricane)
- 
-dfKatrina =<span class="st"> </span><span class="kw">subset</span>(Hurricane, Name <span class="op">==</span><span class="st"> &#39;KATRINA&#39;</span>)
-dfKatrina =<span class="st"> </span>dfKatrina[dfKatrina<span class="op">$</span>Year <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(dfKatrina<span class="op">$</span>Year), ]
-
-dfHugo =<span class="st"> </span><span class="kw">subset</span>(Hurricane, Name <span class="op">==</span><span class="st"> &#39;HUGO&#39;</span>)
-dfHugo =<span class="st"> </span>dfHugo[dfHugo<span class="op">$</span>Year <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(dfHugo<span class="op">$</span>Year), ]
- 
-dfDonna =<span class="st"> </span>Hurricane[Hurricane<span class="op">$</span>Name <span class="op">==</span><span class="st"> &#39;DONNA&#39;</span>, ]
-dfDonna =<span class="st"> </span>dfDonna[dfDonna<span class="op">$</span>Year <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(dfDonna<span class="op">$</span>Year), ]</code></pre></div>
-<pre><code>## Warning in max(dfDonna$Year): no non-missing arguments to max; returning -
-## Inf</code></pre>
-</section>
-<section id="hurricanes-1" class="slide level2">
-<h2>Hurricanes</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">map</span>(<span class="st">&#39;state&#39;</span>)
-<span class="kw">points</span>(dfKatrina<span class="op">$</span>Longitude, dfKatrina<span class="op">$</span>Latitude, <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>)
-<span class="kw">points</span>(dfHugo<span class="op">$</span>Longitude, dfHugo<span class="op">$</span>Latitude, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>)
-<span class="kw">points</span>(dfDonna<span class="op">$</span>Longitude, dfDonna<span class="op">$</span>Latitude, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="st">&#39;green&#39;</span>)</code></pre></div>
-<p><img src="visualization_files/figure-revealjs/unnamed-chunk-14-1.png" width="768" /></p>
-</section>
-<section id="summary" class="slide level2">
+</section><section id="labels" class="slide level2">
+<h2>Labels</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plt <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;Policy year&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;# of claims&#39;</span>)</code></pre></div>
+<p><img src="visualization_files/figure-revealjs/unnamed-chunk-17-1.png" width="768" /></p>
+</section><section id="gridlines" class="slide level2">
+<h2>Gridlines</h2>
+<!-- ## Your turn -->
+<!-- 1. Create a scatter plot for policy year and number of claims -->
+<!-- 2. Color each point based on region -->
+<!-- 2. Add a linear smoother. Which region is showing the greatest increase in claims? -->
+<!-- 4. Form the policy frequency by taking the ratio of claims to policies. Plot this. -->
+<!-- Extra credit: -->
+<!-- 1. Use the state data to create a time series number of claims. Facet by region. -->
+<!-- ## Answers -->
+<!-- ```{r} -->
+<!-- library(raw) -->
+<!-- data("RegionExperience") -->
+<!-- plt1 <- ggplot(RegionExperience, aes(x = PolicyYear, y = NumClaims)) + geom_point() -->
+<!-- plt1 -->
+<!-- plt2 <- plt1 + aes(color = Region) -->
+<!-- plt2 -->
+<!-- plt3 <- plt2 + stat_smooth(method = "lm") -->
+<!-- plt3 -->
+<!-- RegionExperience$Frequency <- with(RegionExperience, NumClaims / NumPolicies) -->
+<!-- plt4 <- ggplot(RegionExperience, aes(x = PolicyYear, y = Frequency, color = Region)) + geom_point() + geom_line() + stat_smooth(method = lm) -->
+<!-- plt4 -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- data("StateExperience") -->
+<!-- pltExtra <- ggplot(StateExperience, aes(x = PolicyYear, y = NumClaims, color = Postal)) + geom_point() + geom_line() -->
+<!-- pltExtra + facet_wrap(~ Region) -->
+<!-- ``` -->
+</section><section id="summary" class="slide level2">
 <h2>Summary</h2>
 <ul>
-<li><code>ggplot2</code> is difficult at first, but will repay your investment.</li>
+<li><code>ggplot2</code> is different at first, but will repay your investment.</li>
 <li>Works very well with grouped data to color/facet points.</li>
 <li>Fine-tuning things like axis labels can be a headache, but will get easier. Yes, Excel makes it easier to add data labels and change colors. <code>ggplot2</code> makes it easier to work with data.</li>
-<li>Maps tend to be a killer viz. They use the same point and area logic as any other graphic.</li>
 </ul>
-</section>
-<section id="reference" class="slide level2">
-<h2>Reference</h2>
-<ul>
-<li><a href="http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf" class="uri">http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf</a></li>
-<li>R Graphics Cookbook by Winston Chang</li>
-<li><a href="http://vita.had.co.nz/papers/layered-grammar.html" class="uri">http://vita.had.co.nz/papers/layered-grammar.html</a></li>
-</ul>
-</section>
+</section></section>
     </div>
   </div>
 

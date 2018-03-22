@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Linear Models</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/theme/solarized.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="..\css\revealOpts.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Linear Models</h1>
+</section>
+
+<section id="load-data" class="slide level2">
+<h2>Load data</h2>
+<p>We are going to use the famous Boston housing data. The goal is to predict the median house value in the suburbs of Boston, given characteristics about the surrounding area of each house.</p>
+<p>This data is supplied in the “MASS” R package so if we don’t have this package installed we need to do so:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;MASS&quot;)</span>
+<span class="kw">library</span>(MASS)</code></pre></div>
+<p>Load in Boston data. This command creates a dataframe called “Boston”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(Boston)</code></pre></div>
+<p>Check out its dimensions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(Boston)</code></pre></div>
+<pre><code>## [1] 506  14</code></pre>
+<p>Look at the first few records and its structure:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(Boston)</code></pre></div>
+<pre><code>##      crim zn indus chas   nox    rm  age    dis rad tax ptratio  black
+## 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90
+## 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90
+## 3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83
+## 4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63
+## 5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90
+## 6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12
+##   lstat medv
+## 1  4.98 24.0
+## 2  9.14 21.6
+## 3  4.03 34.7
+## 4  2.94 33.4
+## 5  5.33 36.2
+## 6  5.21 28.7</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(Boston)</code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    506 obs. of  14 variables:
+##  $ crim   : num  0.00632 0.02731 0.02729 0.03237 0.06905 ...
+##  $ zn     : num  18 0 0 0 0 0 12.5 12.5 12.5 12.5 ...
+##  $ indus  : num  2.31 7.07 7.07 2.18 2.18 2.18 7.87 7.87 7.87 7.87 ...
+##  $ chas   : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ nox    : num  0.538 0.469 0.469 0.458 0.458 0.458 0.524 0.524 0.524 0.524 ...
+##  $ rm     : num  6.58 6.42 7.18 7 7.15 ...
+##  $ age    : num  65.2 78.9 61.1 45.8 54.2 58.7 66.6 96.1 100 85.9 ...
+##  $ dis    : num  4.09 4.97 4.97 6.06 6.06 ...
+##  $ rad    : int  1 2 2 3 3 3 5 5 5 5 ...
+##  $ tax    : num  296 242 242 222 222 222 311 311 311 311 ...
+##  $ ptratio: num  15.3 17.8 17.8 18.7 18.7 18.7 15.2 15.2 15.2 15.2 ...
+##  $ black  : num  397 397 393 395 397 ...
+##  $ lstat  : num  4.98 9.14 4.03 2.94 5.33 ...
+##  $ medv   : num  24 21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9 ...</code></pre>
+</section>
+<section id="data-prep" class="slide level2">
+<h2>Data Prep</h2>
+<p>How many distinct values are in each column?</p>
+<p>We will use the lapply function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">distinctvals &lt;-<span class="st"> </span><span class="kw">lapply</span>(Boston, unique)
+
+lengthdistinctvals &lt;-<span class="st"> </span><span class="kw">lapply</span>(distinctvals, length)
+
+lengthdistinctvals &lt;-<span class="st"> </span><span class="kw">unlist</span>(lengthdistinctvals)
+lengthdistinctvals</code></pre></div>
+<pre><code>##    crim      zn   indus    chas     nox      rm     age     dis     rad 
+##     504      26      76       2      81     446     356     412       9 
+##     tax ptratio   black   lstat    medv 
+##      66      46     357     455     229</code></pre>
+<p>Look at some bar plots:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">barplot</span>(<span class="kw">table</span>(Boston<span class="op">$</span>chas))</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-6-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">barplot</span>(<span class="kw">table</span>(Boston<span class="op">$</span>rad))</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-6-2.png" width="768" /></p>
+<p>“chas” is actually a dummy variable whether the land bounds the Charles river, and “rad” is an index of accessibility to radial highways.</p>
+<p>These variables should be treated as categorical, not numeric. We should change the data types:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Boston<span class="op">$</span>chas &lt;-<span class="st"> </span><span class="kw">as.character</span>(Boston<span class="op">$</span>chas)
+Boston<span class="op">$</span>rad &lt;-<span class="st"> </span><span class="kw">as.character</span>(Boston<span class="op">$</span>rad)</code></pre></div>
+</section>
+<section id="exploratory-data-analysis-eda" class="slide level2">
+<h2>Exploratory Data Analysis (EDA)</h2>
+<p>Diagnostics on medv:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(Boston<span class="op">$</span>medv)</code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    5.00   17.02   21.20   22.53   25.00   50.00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(Boston<span class="op">$</span>medv, <span class="dt">breaks =</span> <span class="dv">30</span>)</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-8-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">sort</span>(Boston<span class="op">$</span>medv), <span class="dt">main =</span> <span class="st">&quot;medv in ascending order&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;medv&quot;</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-8-2.png" width="768" /></p>
+<p>Look at a couple variables vs. medv:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Boston<span class="op">$</span>crim, Boston<span class="op">$</span>medv, <span class="dt">main =</span> <span class="st">&quot;crim vs. medv&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;crim&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;medv&quot;</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-9-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(Boston<span class="op">$</span>crim, Boston<span class="op">$</span>medv)</code></pre></div>
+<pre><code>## [1] -0.3883046</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Boston<span class="op">$</span>rm, Boston<span class="op">$</span>medv, <span class="dt">main =</span> <span class="st">&quot;rm vs. medv&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;rm&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;medv&quot;</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-9-2.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(Boston<span class="op">$</span>rm, Boston<span class="op">$</span>medv)</code></pre></div>
+<pre><code>## [1] 0.6953599</code></pre>
+<p>Look at correlations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">correlations &lt;-<span class="st"> </span><span class="kw">cor</span>(<span class="kw">subset</span>(Boston, <span class="dt">select =</span> <span class="op">-</span><span class="kw">c</span>(chas, rad)))
+correlations</code></pre></div>
+<pre><code>##               crim         zn      indus        nox         rm        age
+## crim     1.0000000 -0.2004692  0.4065834  0.4209717 -0.2192467  0.3527343
+## zn      -0.2004692  1.0000000 -0.5338282 -0.5166037  0.3119906 -0.5695373
+## indus    0.4065834 -0.5338282  1.0000000  0.7636514 -0.3916759  0.6447785
+## nox      0.4209717 -0.5166037  0.7636514  1.0000000 -0.3021882  0.7314701
+## rm      -0.2192467  0.3119906 -0.3916759 -0.3021882  1.0000000 -0.2402649
+## age      0.3527343 -0.5695373  0.6447785  0.7314701 -0.2402649  1.0000000
+## dis     -0.3796701  0.6644082 -0.7080270 -0.7692301  0.2052462 -0.7478805
+## tax      0.5827643 -0.3145633  0.7207602  0.6680232 -0.2920478  0.5064556
+## ptratio  0.2899456 -0.3916785  0.3832476  0.1889327 -0.3555015  0.2615150
+## black   -0.3850639  0.1755203 -0.3569765 -0.3800506  0.1280686 -0.2735340
+## lstat    0.4556215 -0.4129946  0.6037997  0.5908789 -0.6138083  0.6023385
+## medv    -0.3883046  0.3604453 -0.4837252 -0.4273208  0.6953599 -0.3769546
+##                dis        tax    ptratio      black      lstat       medv
+## crim    -0.3796701  0.5827643  0.2899456 -0.3850639  0.4556215 -0.3883046
+## zn       0.6644082 -0.3145633 -0.3916785  0.1755203 -0.4129946  0.3604453
+## indus   -0.7080270  0.7207602  0.3832476 -0.3569765  0.6037997 -0.4837252
+## nox     -0.7692301  0.6680232  0.1889327 -0.3800506  0.5908789 -0.4273208
+## rm       0.2052462 -0.2920478 -0.3555015  0.1280686 -0.6138083  0.6953599
+## age     -0.7478805  0.5064556  0.2615150 -0.2735340  0.6023385 -0.3769546
+## dis      1.0000000 -0.5344316 -0.2324705  0.2915117 -0.4969958  0.2499287
+## tax     -0.5344316  1.0000000  0.4608530 -0.4418080  0.5439934 -0.4685359
+## ptratio -0.2324705  0.4608530  1.0000000 -0.1773833  0.3740443 -0.5077867
+## black    0.2915117 -0.4418080 -0.1773833  1.0000000 -0.3660869  0.3334608
+## lstat   -0.4969958  0.5439934  0.3740443 -0.3660869  1.0000000 -0.7376627
+## medv     0.2499287 -0.4685359 -0.5077867  0.3334608 -0.7376627  1.0000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;corrplot&quot;)</span>
+<span class="kw">library</span>(corrplot)</code></pre></div>
+<pre><code>## Warning: package &#39;corrplot&#39; was built under R version 3.4.4</code></pre>
+<pre><code>## corrplot 0.84 loaded</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">corrplot</span>(correlations, <span class="dt">method =</span> <span class="st">&quot;ellipse&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;full&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Correlations&quot;</span>, <span class="dt">diag =</span> <span class="ot">TRUE</span>, <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-10-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">corrplot</span>(correlations, <span class="dt">method =</span> <span class="st">&quot;ellipse&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;upper&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Correlations&quot;</span>, <span class="dt">diag =</span> <span class="ot">FALSE</span>, <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="dt">addCoef.col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">number.cex =</span> <span class="fl">0.7</span>)</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-10-2.png" width="768" /></p>
+<p>Although there are some high correlations, Let’s keep all the variables and move forward.</p>
+</section>
+<section id="run-linear-regression-model" class="slide level2">
+<h2>Run linear regression model</h2>
+<p>First, include all variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model0 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model0)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ ., data = Boston)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -15.1020  -2.7355  -0.4565   1.6821  25.9450 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  35.259615   5.433641   6.489 2.14e-10 ***
+## crim         -0.108821   0.032685  -3.329 0.000937 ***
+## zn            0.054896   0.014149   3.880 0.000119 ***
+## indus         0.023760   0.063648   0.373 0.709081    
+## chas1         2.524163   0.863181   2.924 0.003614 ** 
+## nox         -17.573132   3.896362  -4.510 8.13e-06 ***
+## rm            3.665491   0.421196   8.703  &lt; 2e-16 ***
+## age           0.000461   0.013227   0.035 0.972210    
+## dis          -1.554546   0.201909  -7.699 7.75e-14 ***
+## rad2          1.488905   1.477509   1.008 0.314095    
+## rad24         7.461674   1.788679   4.172 3.58e-05 ***
+## rad3          4.681254   1.335295   3.506 0.000498 ***
+## rad4          2.576234   1.187369   2.170 0.030514 *  
+## rad5          2.918493   1.207610   2.417 0.016028 *  
+## rad6          1.185839   1.464013   0.810 0.418342    
+## rad7          4.878992   1.571198   3.105 0.002012 ** 
+## rad8          4.839836   1.491657   3.245 0.001257 ** 
+## tax          -0.008748   0.003895  -2.246 0.025144 *  
+## ptratio      -0.972419   0.144478  -6.731 4.78e-11 ***
+## black         0.009394   0.002661   3.531 0.000454 ***
+## lstat        -0.529226   0.050640 -10.451  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.694 on 485 degrees of freedom
+## Multiple R-squared:  0.7499, Adjusted R-squared:  0.7396 
+## F-statistic:  72.7 on 20 and 485 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7396</span></code></pre></div>
+<p>Check out some preliminary diagnostics:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(2,2))</span>
+<span class="kw">plot</span>(model0)</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-12-1.png" width="768" /><img src="linear_models_files/figure-revealjs/unnamed-chunk-12-2.png" width="768" /><img src="linear_models_files/figure-revealjs/unnamed-chunk-12-3.png" width="768" /><img src="linear_models_files/figure-revealjs/unnamed-chunk-12-4.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># par(mfrow = c(1,1))</span></code></pre></div>
+<p>“indus” &amp; “age” (&amp; maybe “rad”) are not statistically significant. Exclude them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">-</span>indus <span class="op">-</span>age, <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model1)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . - indus - age, data = Boston)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -15.104  -2.718  -0.478   1.634  25.968 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  35.175681   5.399135   6.515 1.82e-10 ***
+## crim         -0.109352   0.032591  -3.355 0.000855 ***
+## zn            0.054066   0.013896   3.891 0.000114 ***
+## chas1         2.559259   0.855862   2.990 0.002928 ** 
+## nox         -17.136641   3.604506  -4.754 2.63e-06 ***
+## rm            3.651923   0.410914   8.887  &lt; 2e-16 ***
+## dis          -1.571146   0.189023  -8.312 9.45e-16 ***
+## rad2          1.567130   1.459344   1.074 0.283418    
+## rad24         7.336238   1.749428   4.194 3.26e-05 ***
+## rad3          4.660505   1.331118   3.501 0.000506 ***
+## rad4          2.605151   1.181554   2.205 0.027931 *  
+## rad5          2.899961   1.204276   2.408 0.016408 *  
+## rad6          1.124387   1.450825   0.775 0.438717    
+## rad7          4.873446   1.566829   3.110 0.001978 ** 
+## rad8          4.794374   1.481623   3.236 0.001295 ** 
+## tax          -0.008124   0.003514  -2.312 0.021196 *  
+## ptratio      -0.969091   0.143258  -6.765 3.84e-11 ***
+## black         0.009369   0.002649   3.537 0.000443 ***
+## lstat        -0.527494   0.047358 -11.138  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.685 on 487 degrees of freedom
+## Multiple R-squared:  0.7498, Adjusted R-squared:  0.7405 
+## F-statistic: 81.08 on 18 and 487 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7405</span></code></pre></div>
+<p>Is model1 statistically better than model0?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anova</span>(model1, model0)</code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: medv ~ (crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat) - indus - age
+## Model 2: medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat
+##   Res.Df   RSS Df Sum of Sq      F Pr(&gt;F)
+## 1    487 10688                           
+## 2    485 10685  2    3.0957 0.0703 0.9322</code></pre>
+<p>The models are not statistically different.</p>
+<p>Let’s try also removing “rad”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model2 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">-</span>indus <span class="op">-</span>age <span class="op">-</span>rad, <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model2)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . - indus - age - rad, data = Boston)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -15.8588  -2.8451  -0.5955   1.4641  27.6777 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  2.974e+01  4.975e+00   5.978 4.33e-09 ***
+## crim        -6.356e-02  3.204e-02  -1.984 0.047853 *  
+## zn           4.131e-02  1.378e-02   2.999 0.002846 ** 
+## chas1        3.037e+00  8.697e-01   3.492 0.000522 ***
+## nox         -1.646e+01  3.605e+00  -4.567 6.26e-06 ***
+## rm           4.147e+00  4.082e-01  10.160  &lt; 2e-16 ***
+## dis         -1.429e+00  1.892e-01  -7.552 2.08e-13 ***
+## tax          5.175e-04  2.191e-03   0.236 0.813396    
+## ptratio     -8.519e-01  1.302e-01  -6.542 1.52e-10 ***
+## black        8.392e-03  2.724e-03   3.081 0.002180 ** 
+## lstat       -5.254e-01  4.843e-02 -10.849  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.837 on 495 degrees of freedom
+## Multiple R-squared:  0.7289, Adjusted R-squared:  0.7234 
+## F-statistic: 133.1 on 10 and 495 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7234</span></code></pre></div>
+<p>Now “tax” doesn’t look good, try removing that:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model3 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">-</span>indus <span class="op">-</span>age <span class="op">-</span>rad <span class="op">-</span>tax, <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model3)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . - indus - age - rad - tax, data = Boston)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -15.803  -2.832  -0.625   1.454  27.766 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  29.507997   4.872538   6.056 2.76e-09 ***
+## crim         -0.061174   0.030377  -2.014 0.044567 *  
+## zn            0.042032   0.013422   3.131 0.001842 ** 
+## chas1         3.029924   0.868349   3.489 0.000527 ***
+## nox         -16.088513   3.232702  -4.977 8.93e-07 ***
+## rm            4.149667   0.407685  10.179  &lt; 2e-16 ***
+## dis          -1.431665   0.188603  -7.591 1.59e-13 ***
+## ptratio      -0.838640   0.117342  -7.147 3.19e-12 ***
+## black         0.008292   0.002688   3.084 0.002153 ** 
+## lstat        -0.525004   0.048351 -10.858  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.833 on 496 degrees of freedom
+## Multiple R-squared:  0.7288, Adjusted R-squared:  0.7239 
+## F-statistic: 148.1 on 9 and 496 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7239</span></code></pre></div>
+</section>
+<section id="feature-selection" class="slide level2">
+<h2>Feature selection</h2>
+<p>Why don’t we just use forward selection, backward elimination and exhaustive search?</p>
+<p>Forward selection:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fwd &lt;-<span class="st"> </span><span class="kw">stepAIC</span>(model0, <span class="dt">direction =</span> <span class="st">&quot;forward&quot;</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Start:  AIC=1585.32
+## medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fwd<span class="op">$</span>anova</code></pre></div>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat
+## 
+## Final Model:
+## medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat
+## 
+## 
+##   Step Df Deviance Resid. Df Resid. Dev      AIC
+## 1                        485   10684.74 1585.318</code></pre>
+<p>This didn’t give us any different model than the model0 (the full model)</p>
+<p>Try backward elimination:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bkwd &lt;-<span class="st"> </span><span class="kw">stepAIC</span>(model0, <span class="dt">direction =</span> <span class="st">&quot;backward&quot;</span>, <span class="dt">trace =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Start:  AIC=1585.32
+## medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat
+## 
+##           Df Sum of Sq   RSS    AIC
+## - age      1      0.03 10685 1583.3
+## - indus    1      3.07 10688 1583.5
+## &lt;none&gt;                 10685 1585.3
+## - tax      1    111.15 10796 1588.5
+## - chas     1    188.39 10873 1592.2
+## - crim     1    244.20 10929 1594.8
+## - black    1    274.62 10959 1596.2
+## - zn       1    331.63 11016 1598.8
+## - nox      1    448.13 11133 1604.1
+## - rad      8    873.19 11558 1609.1
+## - ptratio  1    997.99 11683 1628.5
+## - dis      1   1305.93 11991 1641.7
+## - rm       1   1668.47 12353 1656.7
+## - lstat    1   2406.15 13091 1686.1
+## 
+## Step:  AIC=1583.32
+## medv ~ crim + zn + indus + chas + nox + rm + dis + rad + tax + 
+##     ptratio + black + lstat
+## 
+##           Df Sum of Sq   RSS    AIC
+## - indus    1      3.07 10688 1581.5
+## &lt;none&gt;                 10685 1583.3
+## - tax      1    111.27 10796 1586.6
+## - chas     1    189.01 10874 1590.2
+## - crim     1    244.18 10929 1592.8
+## - black    1    276.15 10961 1594.2
+## - zn       1    334.32 11019 1596.9
+## - nox      1    477.15 11162 1603.4
+## - rad      8    875.17 11560 1607.2
+## - ptratio  1   1007.34 11692 1626.9
+## - dis      1   1427.54 12112 1644.8
+## - rm       1   1729.50 12414 1657.2
+## - lstat    1   2723.34 13408 1696.2
+## 
+## Step:  AIC=1581.46
+## medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+##     black + lstat
+## 
+##           Df Sum of Sq   RSS    AIC
+## &lt;none&gt;                 10688 1581.5
+## - tax      1    117.31 10805 1585.0
+## - chas     1    196.24 10884 1588.7
+## - crim     1    247.07 10935 1591.0
+## - black    1    274.60 10962 1592.3
+## - zn       1    332.21 11020 1595.0
+## - nox      1    496.04 11184 1602.4
+## - rad      8    894.44 11582 1606.1
+## - ptratio  1   1004.27 11692 1624.9
+## - dis      1   1516.24 12204 1646.6
+## - rm       1   1733.41 12421 1655.5
+## - lstat    1   2722.70 13410 1694.3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bkwd<span class="op">$</span>anova</code></pre></div>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## medv ~ crim + zn + indus + chas + nox + rm + age + dis + rad + 
+##     tax + ptratio + black + lstat
+## 
+## Final Model:
+## medv ~ crim + zn + chas + nox + rm + dis + rad + tax + ptratio + 
+##     black + lstat
+## 
+## 
+##      Step Df   Deviance Resid. Df Resid. Dev      AIC
+## 1                             485   10684.74 1585.318
+## 2   - age  1 0.02676282       486   10684.77 1583.319
+## 3 - indus  1 3.06898954       487   10687.84 1581.465</code></pre>
+<p>This eliminated “age” and “indus” as we did in model1 (Adj R2 = 0.7405)</p>
+<p>Try exhaustive search using the regsubsets from the leaps package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;leaps&quot;)</span>
+<span class="kw">library</span>(leaps)</code></pre></div>
+<pre><code>## Warning: package &#39;leaps&#39; was built under R version 3.4.4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exhaustive &lt;-<span class="st"> </span><span class="kw">regsubsets</span>(medv <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Boston, <span class="dt">nbest =</span> <span class="dv">1</span>)</code></pre></div>
+<p>Homework: Run this code and learn how to explore the results.</p>
+</section>
+<section id="diagnostics" class="slide level2">
+<h2>Diagnostics</h2>
+<p>First, get predictions from the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred &lt;-<span class="st"> </span><span class="kw">predict</span>(model1, <span class="dt">newdata =</span> Boston)</code></pre></div>
+<p>Plot actual vs. predicted values from our best linear regression model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Boston<span class="op">$</span>medv, pred, <span class="dt">main =</span> <span class="st">&quot;Actual vs. Predicted from Linear Regression&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;medv&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;pred&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-21-1.png" width="768" /></p>
+</section>
+<section id="interactions" class="slide level2">
+<h2>Interactions</h2>
+<p>Let’s add an interaction between “rm” &amp; “lstat”, and add up to a 10th degree polynomial curve transformation of “lstat”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model4 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">+</span>rm<span class="op">:</span>lstat <span class="op">+</span><span class="kw">poly</span>(lstat, <span class="dv">10</span>), <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model4)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . + rm:lstat + poly(lstat, 10), data = Boston)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -17.9402  -2.1900  -0.2196   1.7977  25.3547 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        17.406213   6.171056   2.821  0.00499 ** 
+## crim               -0.158077   0.028213  -5.603 3.57e-08 ***
+## zn                  0.018629   0.012469   1.494  0.13583    
+## indus               0.019099   0.055044   0.347  0.72876    
+## chas1               1.670806   0.737443   2.266  0.02392 *  
+## nox               -14.630498   3.381714  -4.326 1.85e-05 ***
+## rm                  5.920921   0.715097   8.280 1.26e-15 ***
+## age                 0.020278   0.011730   1.729  0.08450 .  
+## dis                -1.073684   0.175544  -6.116 2.00e-09 ***
+## rad2                0.837639   1.258130   0.666  0.50587    
+## rad24               7.824339   1.528319   5.120 4.46e-07 ***
+## rad3                3.582265   1.145968   3.126  0.00188 ** 
+## rad4                2.162638   1.013868   2.133  0.03343 *  
+## rad5                2.436855   1.029532   2.367  0.01834 *  
+## rad6                1.929794   1.260162   1.531  0.12634    
+## rad7                3.719022   1.338882   2.778  0.00569 ** 
+## rad8                2.777286   1.277139   2.175  0.03015 *  
+## tax                -0.009930   0.003310  -3.000  0.00284 ** 
+## ptratio            -0.766130   0.124960  -6.131 1.84e-09 ***
+## black               0.005662   0.002346   2.414  0.01618 *  
+## lstat               1.006327   0.311238   3.233  0.00131 ** 
+## poly(lstat, 10)1          NA         NA      NA       NA    
+## poly(lstat, 10)2   21.803117   7.047684   3.094  0.00209 ** 
+## poly(lstat, 10)3  -12.764820   4.431207  -2.881  0.00415 ** 
+## poly(lstat, 10)4   12.718895   4.423477   2.875  0.00422 ** 
+## poly(lstat, 10)5  -12.447412   4.109030  -3.029  0.00258 ** 
+## poly(lstat, 10)6    2.867989   4.053044   0.708  0.47953    
+## poly(lstat, 10)7   -1.019847   4.123099  -0.247  0.80474    
+## poly(lstat, 10)8   -6.757694   4.027202  -1.678  0.09400 .  
+## poly(lstat, 10)9    2.488913   4.105158   0.606  0.54461    
+## poly(lstat, 10)10  -7.058867   4.036647  -1.749  0.08099 .  
+## rm:lstat           -0.281797   0.051971  -5.422 9.39e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.978 on 475 degrees of freedom
+## Multiple R-squared:  0.824,  Adjusted R-squared:  0.8129 
+## F-statistic: 74.14 on 30 and 475 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.8129</span></code></pre></div>
+<p>Remove low p-value variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model5 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">-</span>zn <span class="op">-</span>indus <span class="op">-</span>age <span class="op">-</span>rad <span class="op">+</span>rm<span class="op">:</span>lstat <span class="op">+</span><span class="kw">poly</span>(lstat, <span class="dv">5</span>), <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model5)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . - zn - indus - age - rad + rm:lstat + poly(lstat, 
+##     5), data = Boston)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -18.6450  -2.2003  -0.3709   1.5403  27.2265 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      13.168901   5.832318   2.258 0.024389 *  
+## crim             -0.106628   0.027764  -3.841 0.000139 ***
+## chas1             2.155726   0.746688   2.887 0.004060 ** 
+## nox             -12.824001   3.086691  -4.155 3.84e-05 ***
+## rm                6.252079   0.700498   8.925  &lt; 2e-16 ***
+## dis              -1.044945   0.141480  -7.386 6.55e-13 ***
+## tax               0.001438   0.001837   0.783 0.433992    
+## ptratio          -0.672665   0.107211  -6.274 7.72e-10 ***
+## black             0.004702   0.002390   1.967 0.049769 *  
+## lstat             0.975559   0.310628   3.141 0.001788 ** 
+## poly(lstat, 5)1         NA         NA      NA       NA    
+## poly(lstat, 5)2  23.244553   6.934813   3.352 0.000865 ***
+## poly(lstat, 5)3 -13.533047   4.481535  -3.020 0.002662 ** 
+## poly(lstat, 5)4  14.523698   4.476778   3.244 0.001258 ** 
+## poly(lstat, 5)5 -12.474381   4.202655  -2.968 0.003142 ** 
+## rm:lstat         -0.272170   0.052209  -5.213 2.74e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.122 on 491 degrees of freedom
+## Multiple R-squared:  0.8047, Adjusted R-squared:  0.7991 
+## F-statistic: 144.5 on 14 and 491 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7991</span></code></pre></div>
+<p>Remove “tax”:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model6 &lt;-<span class="st"> </span><span class="kw">lm</span>(medv <span class="op">~</span><span class="st"> </span>. <span class="op">-</span>zn <span class="op">-</span>indus <span class="op">-</span>age <span class="op">-</span>rad <span class="op">+</span>rm<span class="op">:</span>lstat <span class="op">+</span><span class="kw">poly</span>(lstat, <span class="dv">5</span>) <span class="op">-</span>tax, <span class="dt">data =</span> Boston)
+<span class="kw">summary</span>(model6)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = medv ~ . - zn - indus - age - rad + rm:lstat + poly(lstat, 
+##     5) - tax, data = Boston)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -18.4321  -2.1376  -0.3993   1.6157  27.4638 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      12.779671   5.808811   2.200 0.028268 *  
+## crim             -0.099274   0.026117  -3.801 0.000162 ***
+## chas1             2.127634   0.745533   2.854 0.004502 ** 
+## nox             -11.814224   2.803290  -4.214 2.98e-05 ***
+## rm                6.234292   0.699855   8.908  &lt; 2e-16 ***
+## dis              -1.039394   0.141247  -7.359 7.84e-13 ***
+## ptratio          -0.642752   0.100134  -6.419 3.23e-10 ***
+## black             0.004450   0.002368   1.879 0.060771 .  
+## lstat             0.963708   0.310137   3.107 0.001997 ** 
+## poly(lstat, 5)1         NA         NA      NA       NA    
+## poly(lstat, 5)2  23.436266   6.927764   3.383 0.000774 ***
+## poly(lstat, 5)3 -13.733685   4.472445  -3.071 0.002253 ** 
+## poly(lstat, 5)4  14.928399   4.445095   3.358 0.000845 ***
+## poly(lstat, 5)5 -12.532188   4.200354  -2.984 0.002990 ** 
+## rm:lstat         -0.269949   0.052111  -5.180 3.24e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.121 on 492 degrees of freedom
+## Multiple R-squared:  0.8044, Adjusted R-squared:  0.7993 
+## F-statistic: 155.7 on 13 and 492 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Adj R2 = 0.7993</span></code></pre></div>
+</section>
+<section id="bonus-material" class="slide level2">
+<h2>Bonus material</h2>
+<p>OK, I’m tired, let’s move on to something more fun.</p>
+<p>Try a random forest algorithm out of the box:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;randomForest&quot;)</span>
+<span class="kw">library</span>(randomForest)</code></pre></div>
+<pre><code>## Warning: package &#39;randomForest&#39; was built under R version 3.4.4</code></pre>
+<pre><code>## randomForest 4.6-12</code></pre>
+<pre><code>## Type rfNews() to see new features/changes/bug fixes.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rf &lt;-<span class="st"> </span><span class="kw">randomForest</span>(medv <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Boston)</code></pre></div>
+<p>Look at model complexity:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rf)</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" /></p>
+<p>Get predictions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred.rf &lt;-<span class="st"> </span><span class="kw">predict</span>(rf, Boston)</code></pre></div>
+<p>Plot actual vs. predicted values from our best linear regression model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Boston<span class="op">$</span>medv, pred.rf, <span class="dt">main =</span> <span class="st">&quot;Actual vs. Predicted from Random Forest&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;medv&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;pred&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-28-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(Boston<span class="op">$</span>medv, pred.rf)<span class="op">^</span><span class="dv">2</span></code></pre></div>
+<pre><code>## [1] 0.9809108</code></pre>
+<p>Compare results to our best linear model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Boston<span class="op">$</span>medv, pred, <span class="dt">main =</span> <span class="st">&quot;Actual vs. Predicted from Linear Regression&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;medv&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;pred&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+<span class="kw">grid</span>()</code></pre></div>
+<p><img src="linear_models_files/figure-revealjs/unnamed-chunk-29-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(Boston<span class="op">$</span>medv, pred)<span class="op">^</span><span class="dv">2</span></code></pre></div>
+<pre><code>## [1] 0.7497948</code></pre>
+</section>
+    </div>
+  </div>
+
+  <script src="libs/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="libs/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'libs/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+          { src: 'libs/reveal.js-3.3.0.1/plugin/zoom-js/zoom.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

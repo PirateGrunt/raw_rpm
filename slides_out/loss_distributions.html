@@ -489,36 +489,267 @@ document.getElementsByTagName('head')[0].appendChild(style);
     <h1 class="title">Loss Distributions</h1>
 </section>
 
-<section><section id="section" class="titleslide slide level1"><h1></h1></section></section>
-<section><section id="packages-well-use" class="titleslide slide level1"><h1>Packages we’ll use</h1></section></section>
-<section><section id="statistical-distributions-in-r" class="titleslide slide level1"><h1>Statistical distributions in R</h1></section></section>
-<section><section id="examples" class="titleslide slide level1"><h1>Examples</h1></section></section>
-<section><section id="generate-some-loss-data" class="titleslide slide level1"><h1>Generate some loss data</h1></section></section>
-<section><section id="histograms" class="titleslide slide level1"><h1>Histograms</h1></section></section>
-<section><section id="density" class="titleslide slide level1"><h1>Density</h1></section></section>
-<section><section id="fitdistr" class="titleslide slide level1"><h1><code>fitdistr</code></h1></section></section>
-<section><section id="q-q-plot" class="titleslide slide level1"><h1>q-q plot</h1></section></section>
-<section><section id="compare-fit-to-histogram" class="titleslide slide level1"><h1>Compare fit to histogram</h1></section></section>
-<section><section id="kolmogorov-smirnov" class="titleslide slide level1"><h1>Kolmogorov-Smirnov</h1></section></section>
-<section><section id="more-k-s" class="titleslide slide level1"><h1>More K-S</h1></section></section>
-<section><section id="direct-optimization" class="titleslide slide level1"><h1>Direct optimization</h1></section></section>
-<section><section id="direct-optimization-1" class="titleslide slide level1"><h1>Direct optimization</h1></section><section id="direct-optimization-2" class="slide level2">
-<h2>Direct optimization</h2>
-<p>Default is to minimize. Set the parameter <code>fnscale</code> to something negative to convert to a maximization problem.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myOtherQuad &lt;-<span class="st"> </span><span class="kw">quadraticFun</span>(<span class="op">-</span><span class="dv">6</span>, <span class="dv">20</span>, <span class="op">-</span><span class="dv">5</span>)
-<span class="kw">plot</span>(myOtherQuad, <span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>)</code></pre></div>
-<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-12-1.png" width="768" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myResult &lt;-<span class="st"> </span><span class="kw">optim</span>(<span class="dv">8</span>, myOtherQuad)</code></pre></div>
-<pre><code>## Warning in optim(8, myOtherQuad): one-dimensional optimization by Nelder-Mead is unreliable:
-## use &quot;Brent&quot; or optimize() directly</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myResult &lt;-<span class="st"> </span><span class="kw">optim</span>(<span class="dv">8</span>, myOtherQuad, <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale=</span><span class="op">-</span><span class="dv">1</span>))</code></pre></div>
-<pre><code>## Warning in optim(8, myOtherQuad, control = list(fnscale = -1)): one-dimensional optimization by Nelder-Mead is unreliable:
-## use &quot;Brent&quot; or optimize() directly</code></pre>
+<section><section id="overview" class="titleslide slide level1"><h1>Overview</h1></section><section id="what-well-do" class="slide level2">
+<h2>What we’ll do</h2>
+<ul>
+<li>Generate some data</li>
+<li>Visualize it</li>
+<li>Explore the log likelihood</li>
+<li>Fit distributions</li>
+<li>Goodness of fit</li>
+</ul>
+<!-- ## Packages we'll use -->
+<!-- * `MASS` (MASS = Modern Applied Statistics in S) -->
+<!--     * `fitdistr` will fit a distribution to a loss distribution function -->
+<!-- * `actuar` -->
+<!--     * `emm` calculates empirical moments -->
+<!--     * `lev` limited expected value -->
+<!--     * `coverage` modifies a loss distribution for coverage elements -->
+<!--     * Contains many more distributions than are found in `base` R such as Burr, Pareto, etc. Basically, anything in "Loss Models" is likely to be found here. -->
+<!--     * Contains the dental claims data from "Loss Models" -->
+</section><section id="generate-some-loss-data" class="slide level2">
+<h2>Generate some loss data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">8910</span>)
+sims &lt;-<span class="st"> </span><span class="fl">5e3</span>
+
+scale &lt;-<span class="st"> </span><span class="dv">250</span>
+shape &lt;-<span class="st"> </span><span class="dv">8</span>
+severity &lt;-<span class="st"> </span><span class="kw">rgamma</span>(sims, shape, <span class="dt">scale =</span> scale)
+
+<span class="kw">summary</span>(severity)
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   250.4  1469.4  1901.2  1994.8  2429.2  5390.6</code></pre></div>
+</section><section id="visualize-it" class="slide level2">
+<h2>Visualize it</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data.frame</span>(<span class="dt">x =</span> severity) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>()</code></pre></div>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-3-1.png" width="768" /></p>
 </section></section>
-<section><section id="direct-optimization-3" class="titleslide slide level1"><h1>Direct optimization</h1></section></section>
-<section><section id="questions" class="titleslide slide level1"><h1>Questions</h1></section></section>
-<section><section id="answers" class="titleslide slide level1"><h1>Answers</h1></section></section>
-<section><section id="what-am-i" class="titleslide slide level1"><h1>What am I?</h1></section></section>
+<section><section id="explore-the-likelihood-function" class="titleslide slide level1"><h1>Explore the likelihood function</h1></section><section id="create-the-function" class="slide level2">
+<h2>Create the function</h2>
+<p><span class="math display">\[\alpha=shape\]</span></p>
+<p><span class="math display">\[\beta = scale\]</span></p>
+<p><span class="math display">\[L(\alpha,\beta)=(\alpha-1)\sum{log(x_i)}\]</span> <span class="math display">\[-(1/\beta)\sum{x_i}-n\alpha*log(\beta)-n*log(\Gamma(\alpha))\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_like_gamma &lt;-<span class="st"> </span><span class="cf">function</span>(x, shape, scale) {
+  n &lt;-<span class="st"> </span><span class="kw">length</span>(x)
+  log_like &lt;-<span class="st"> </span><span class="kw">sum</span>(x) <span class="op">/</span><span class="st"> </span>scale <span class="op">+</span><span class="st"> </span>n <span class="op">*</span><span class="st"> </span>shape <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(scale) <span class="op">+</span><span class="st"> </span>n <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="kw">gamma</span>(shape))
+  log_like &lt;-<span class="st"> </span>(shape <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(<span class="kw">log</span>(x)) <span class="op">-</span><span class="st"> </span>log_like
+  log_like
+}</code></pre></div>
+</section><section id="explore-along-the-shape" class="slide level2">
+<h2>Explore along the shape</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">log_like_gamma</span>(severity, <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="dv">2</span>), <span class="kw">c</span>(<span class="dv">500</span>, <span class="dv">1000</span>))
+## [1] -57182.66 -41380.14
+tbl_log_like &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">shape =</span> <span class="kw">seq</span>(<span class="fl">0.05</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">500</span>)
+)
+
+tbl_log_like &lt;-<span class="st"> </span>tbl_log_like <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(
+      <span class="dt">scale =</span> <span class="kw">mean</span>(severity) <span class="op">/</span><span class="st"> </span>shape
+    , <span class="dt">log_like =</span> <span class="kw">log_like_gamma</span>(severity, shape, scale)
+  )
+## Warning: package &#39;bindrcpp&#39; was built under R version 3.4.4</code></pre></div>
+</section><section id="visualize" class="slide level2">
+<h2>Visualize</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tbl_log_like <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(shape, log_like)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>()</code></pre></div>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-6-1.png" width="768" /></p>
+</section><section id="explore-along-the-scale" class="slide level2">
+<h2>Explore along the scale</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tbl_log_like &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">scale =</span> <span class="kw">seq</span>(<span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">min</span>(severity), <span class="kw">max</span>(severity), <span class="dt">length.out =</span> <span class="dv">500</span>)
+)
+
+tbl_log_like &lt;-<span class="st"> </span>tbl_log_like <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(
+      <span class="dt">shape =</span> <span class="kw">mean</span>(severity) <span class="op">/</span><span class="st"> </span>scale
+    , <span class="dt">log_like =</span> <span class="kw">log_like_gamma</span>(severity, shape, scale)
+  )</code></pre></div>
+</section><section id="visualize-1" class="slide level2">
+<h2>Visualize</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tbl_log_like <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(scale, log_like)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>()</code></pre></div>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-8-1.png" width="768" /></p>
+</section><section id="explore-both" class="slide level2">
+<h2>Explore both</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tbl_log_like &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(
+    <span class="dt">scale =</span> <span class="kw">seq</span>(<span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">min</span>(severity), <span class="kw">max</span>(severity), <span class="dt">length.out =</span> <span class="dv">250</span>)
+  , <span class="dt">shape =</span> <span class="kw">seq</span>(<span class="fl">0.05</span>, <span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">250</span>)
+) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(
+    <span class="dt">log_like =</span> <span class="kw">log_like_gamma</span>(severity, shape, scale)
+  )</code></pre></div>
+</section><section id="visualize-2" class="slide level2">
+<h2>Visualize</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tbl_log_like <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(scale, shape)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_raster</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> log_like), <span class="dt">interpolate =</span> <span class="ot">TRUE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_continuous</span>(<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;green&#39;</span>)</code></pre></div>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-10-1.png" width="768" /></p>
+</section></section>
+<section><section id="fitdistr" class="titleslide slide level1"><h1><code>fitdistr</code></h1></section><section id="a-better-way" class="slide level2">
+<h2>A better way</h2>
+<p>Directly examining the log-likelihood is instructive, but we don’t do this in practice.</p>
+</section><section id="fitdistr-1" class="slide level2">
+<h2><code>fitdistr</code></h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MASS)
+
+fitGamma &lt;-<span class="st"> </span><span class="kw">fitdistr</span>(severity, <span class="st">&quot;gamma&quot;</span>)
+fitLognormal &lt;-<span class="st"> </span><span class="kw">fitdistr</span>(severity, <span class="st">&quot;lognormal&quot;</span>)
+fitWeibull &lt;-<span class="st"> </span><span class="kw">fitdistr</span>(severity, <span class="st">&quot;Weibull&quot;</span>)
+
+fitGamma
+##       shape           rate    
+##   7.999662e+00   4.011058e-03 
+##  (1.223052e-01) (6.129035e-05)
+fitLognormal
+##      meanlog        sdlog   
+##   7.534331246   0.365362791 
+##  (0.005167010) (0.003653628)
+fitWeibull
+##       shape          scale    
+##   3.002232e+00   2.233063e+03 
+##  (3.150096e-02) (1.113253e+01)</code></pre></div>
+</section><section id="q-q-plot" class="slide level2">
+<h2>q-q plot</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">probabilities =<span class="st"> </span><span class="kw">seq_len</span>(sims)<span class="op">/</span>(sims <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+
+weibullQ &lt;-<span class="st"> </span><span class="kw">qweibull</span>(probabilities, <span class="kw">coef</span>(fitWeibull)[<span class="dv">1</span>], <span class="kw">coef</span>(fitWeibull)[<span class="dv">2</span>])
+lnQ &lt;-<span class="st"> </span><span class="kw">qlnorm</span>(probabilities, <span class="kw">coef</span>(fitLognormal)[<span class="dv">1</span>], <span class="kw">coef</span>(fitLognormal)[<span class="dv">2</span>])
+gammaQ &lt;-<span class="st"> </span><span class="kw">qgamma</span>(probabilities, <span class="kw">coef</span>(fitGamma)[<span class="dv">1</span>], <span class="kw">coef</span>(fitGamma)[<span class="dv">2</span>])
+
+sampleLogMean &lt;-<span class="st"> </span>fitLognormal<span class="op">$</span>estimate[<span class="dv">1</span>]
+sampleLogSd &lt;-<span class="st"> </span>fitLognormal<span class="op">$</span>estimate[<span class="dv">2</span>]
+
+sampleShape &lt;-<span class="st"> </span>fitGamma<span class="op">$</span>estimate[<span class="dv">1</span>]
+sampleRate &lt;-<span class="st"> </span>fitGamma<span class="op">$</span>estimate[<span class="dv">2</span>]
+
+sampleShapeW &lt;-<span class="st"> </span>fitWeibull<span class="op">$</span>estimate[<span class="dv">1</span>]
+sampleScaleW &lt;-<span class="st"> </span>fitWeibull<span class="op">$</span>estimate[<span class="dv">2</span>]
+
+sortedSeverity &lt;-<span class="st"> </span><span class="kw">sort</span>(severity)
+oldPar &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))
+<span class="kw">plot</span>(<span class="kw">sort</span>(weibullQ), sortedSeverity, <span class="dt">xlab =</span> <span class="st">&#39;Theoretical Quantiles&#39;</span>, <span class="dt">ylab =</span> <span class="st">&#39;Sample Quantiles&#39;</span>, <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">main =</span> <span class="st">&quot;Weibull Fit&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+
+<span class="kw">plot</span>(<span class="kw">sort</span>(lnQ), sortedSeverity, <span class="dt">xlab =</span> <span class="st">&#39;Theoretical Quantiles&#39;</span>, <span class="dt">ylab =</span> <span class="st">&#39;Sample Quantiles&#39;</span>, <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">main =</span> <span class="st">&quot;Lognormal Fit&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+
+<span class="kw">plot</span>(<span class="kw">sort</span>(gammaQ), sortedSeverity, <span class="dt">xlab =</span> <span class="st">&#39;Theoretical Quantiles&#39;</span>, <span class="dt">ylab =</span> <span class="st">&#39;Sample Quantiles&#39;</span>, <span class="dt">pch=</span><span class="dv">19</span>, <span class="dt">main =</span> <span class="st">&quot;Gamma Fit&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+
+<span class="kw">par</span>(oldPar)</code></pre></div>
+</section><section id="section" class="slide level2">
+<h2></h2>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-13-1.png" width="768" /></p>
+</section><section id="compare-fit-to-histogram" class="slide level2">
+<h2>Compare fit to histogram</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="kw">max</span>(severity), <span class="dt">length.out=</span><span class="dv">500</span>)
+yLN &lt;-<span class="st"> </span><span class="kw">dlnorm</span>(x, sampleLogMean, sampleLogSd)
+yGamma &lt;-<span class="st"> </span><span class="kw">dgamma</span>(x, sampleShape, sampleRate)
+yWeibull &lt;-<span class="st"> </span><span class="kw">dweibull</span>(x, sampleShapeW, sampleScaleW)
+
+<span class="kw">hist</span>(severity, <span class="dt">freq=</span><span class="ot">FALSE</span>, <span class="dt">ylim=</span><span class="kw">range</span>(yLN, yGamma))
+
+<span class="kw">lines</span>(x, yLN, <span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)
+<span class="kw">lines</span>(x, yGamma, <span class="dt">col=</span><span class="st">&quot;red&quot;</span>)
+<span class="kw">lines</span>(x, yWeibull, <span class="dt">col=</span><span class="st">&quot;green&quot;</span>)</code></pre></div>
+</section><section id="section-1" class="slide level2">
+<h2></h2>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-15-1.png" width="768" /></p>
+</section><section id="kolmogorov-smirnov" class="slide level2">
+<h2>Kolmogorov-Smirnov</h2>
+<p>The Kolmogorov-Smirnov test measures the distance between an sample distribution and a candidate loss distribution. More formal than q-q plots.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sampleCumul &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>, <span class="kw">length</span>(severity)) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(severity)
+stepSample  &lt;-<span class="st"> </span><span class="kw">stepfun</span>(sortedSeverity, <span class="kw">c</span>(<span class="dv">0</span>, sampleCumul), <span class="dt">f =</span> <span class="dv">0</span>)
+yGamma &lt;-<span class="st"> </span><span class="kw">pgamma</span>(sortedSeverity, sampleShape, sampleRate)
+yWeibull &lt;-<span class="st"> </span><span class="kw">pweibull</span>(sortedSeverity, sampleShapeW, sampleScaleW)
+yLN &lt;-<span class="st"> </span><span class="kw">plnorm</span>(sortedSeverity, sampleLogMean, sampleLogSd)
+
+<span class="kw">plot</span>(stepSample, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;K-S Gamma&quot;</span>)
+<span class="kw">lines</span>(sortedSeverity, yGamma, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)
+
+<span class="kw">plot</span>(stepSample, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;K-S Weibull&quot;</span>)
+<span class="kw">lines</span>(sortedSeverity, yWeibull, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)
+
+<span class="kw">plot</span>(stepSample, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;K-S Lognormal&quot;</span>)
+<span class="kw">lines</span>(sortedSeverity, yLN, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>)</code></pre></div>
+</section><section id="section-2" class="slide level2">
+<h2></h2>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-17-1.png" width="768" /></p>
+</section><section id="section-3" class="slide level2">
+<h2></h2>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-18-1.png" width="768" /></p>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p><img src="loss_distributions_files/figure-revealjs/unnamed-chunk-19-1.png" width="768" /></p>
+</section><section id="more-k-s" class="slide level2">
+<h2>More K-S</h2>
+<p>A low value for D indicates that the selected curve is fairly close to our data. The p-value indicates the chance that D was produced by the null hypothesis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testGamma &lt;-<span class="st"> </span><span class="kw">ks.test</span>(severity, <span class="st">&quot;pgamma&quot;</span>, sampleShape, sampleRate)
+testLN &lt;-<span class="st"> </span><span class="kw">ks.test</span>(severity, <span class="st">&quot;plnorm&quot;</span>, sampleLogMean, sampleLogSd)
+testWeibull &lt;-<span class="st"> </span><span class="kw">ks.test</span>(severity, <span class="st">&quot;pweibull&quot;</span>, sampleShapeW, sampleScaleW)
+
+testGamma
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  severity
+## D = 0.0095988, p-value = 0.7463
+## alternative hypothesis: two-sided
+testLN
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  severity
+## D = 0.024647, p-value = 0.0046
+## alternative hypothesis: two-sided
+testWeibull
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  severity
+## D = 0.041326, p-value = 7.658e-08
+## alternative hypothesis: two-sided</code></pre></div>
+</section></section>
+<section><section id="your-turn" class="titleslide slide level1"><h1>Your turn</h1></section><section id="your-turn-1" class="slide level2">
+<h2>Your turn</h2>
+<ul>
+<li>Simulate one thousand observations from a weibull distribution</li>
+<li>Fit this against gamma and exponential distributions</li>
+<li>Try that again with only 100 observations (tip: you don’t need to generate the samples again. You can simply subset the vector you created in the first step.)</li>
+</ul>
+<!-- # Direct optimization -->
+<!-- The `optim` function will optimize a function. Works very similar to the Solver algorithm in Excel. `optim` takes a function as an argument, so let's create a function. -->
+<!-- ```{r} -->
+<!-- quadraticFun <- function(a, b, c){ -->
+<!--   function(x) a*x^2 + b*x + c -->
+<!-- } -->
+<!-- myQuad <- quadraticFun(a=4, b=-3, c=3) -->
+<!-- plot(myQuad, -10, 10) -->
+<!-- ``` -->
+<!-- # Direct optimization -->
+<!-- 8 is our initial guess. A good initial guess will speed up conversion. -->
+<!-- ```{r } -->
+<!-- myResult <- optim(8, myQuad) -->
+<!-- myResult -->
+<!-- ``` -->
+<!-- ## Direct optimization -->
+<!-- Default is to minimize. Set the parameter `fnscale` to something negative to convert to a maximization problem. -->
+<!-- ```{r } -->
+<!-- myOtherQuad <- quadraticFun(-6, 20, -5) -->
+<!-- plot(myOtherQuad, -10, 10) -->
+<!-- myResult <- optim(8, myOtherQuad) -->
+<!-- myResult <- optim(8, myOtherQuad, control = list(fnscale=-1)) -->
+<!-- ``` -->
+<!-- # Direct optimization -->
+<!-- Direct optimization allows us to create another objective function to maximize, or work with loss distributions for which there isn't yet support in a package like `actuar`. May be used for general purpose optimization problems, e.g. maximize rate of return for various capital allocation methods. -->
+<!-- Note that optimization is a general, solved problem. Things like the simplex method already have package solutions in R. You don't need to reinvent the wheel! -->
+</section></section>
     </div>
   </div>
 

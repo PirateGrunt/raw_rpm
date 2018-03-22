@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/css/reveal.css"/>
+  <link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/reveal.css"/>
 
 
 <style type="text/css">
@@ -48,7 +48,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
-<link rel="stylesheet" href="C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/css/theme/solarized.css" id="theme">
+<link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/theme/solarized.css" id="theme">
 
 
   <!-- some tweaks to reveal css -->
@@ -686,34 +686,34 @@ myOtherMatrix &lt;-<span class="st"> </span>myVector
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myMatrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">nrow=</span><span class="dv">10</span>, <span class="dt">ncol=</span><span class="dv">10</span>, <span class="dt">data =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>))
 <span class="kw">colnames</span>(myMatrix) &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]
 <span class="kw">head</span>(myMatrix, <span class="dv">3</span>)</code></pre></div>
-<pre><code>##       a  b  c  d  e  f  g  h  i  j
-## [1,] 40 73 62 16 39 21 78 84 82 68
-## [2,]  1 13 56 38 76 85 95 89 67 30
-## [3,] 29 31 64 65 87 46 54 20  2 59</code></pre>
+<pre><code>##        a  b  c  d  e  f  g  h  i  j
+## [1,]  68 47  1 26 59 66 56 95 21 12
+## [2,]   3 50 41 19 43 52 90 81 82 20
+## [3,] 100 22 71  9 61 79 18 25  5 70</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rownames</span>(myMatrix) &lt;-<span class="st"> </span><span class="kw">tail</span>(letters, <span class="dv">10</span>)
 <span class="kw">head</span>(myMatrix, <span class="dv">3</span>)</code></pre></div>
-<pre><code>##    a  b  c  d  e  f  g  h  i  j
-## q 40 73 62 16 39 21 78 84 82 68
-## r  1 13 56 38 76 85 95 89 67 30
-## s 29 31 64 65 87 46 54 20  2 59</code></pre>
+<pre><code>##     a  b  c  d  e  f  g  h  i  j
+## q  68 47  1 26 59 66 56 95 21 12
+## r   3 50 41 19 43 52 90 81 82 20
+## s 100 22 71  9 61 79 18 25  5 70</code></pre>
 </section>
 <section id="data-access-for-a-matrix" class="slide level2">
 <h2>Data access for a matrix</h2>
 <p>Matrix access is similar to vector, but with additional dimensions. For two-dimensional matrices, the order is row first, then column.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myMatrix[<span class="dv">2</span>, ]</code></pre></div>
 <pre><code>##  a  b  c  d  e  f  g  h  i  j 
-##  1 13 56 38 76 85 95 89 67 30</code></pre>
+##  3 50 41 19 43 52 90 81 82 20</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myMatrix[, <span class="dv">2</span>]</code></pre></div>
 <pre><code>##  q  r  s  t  u  v  w  x  y  z 
-## 73 13 31 57 35  4 45 44 12 72</code></pre>
+## 47 50 22  7 87 86 73 76 84 65</code></pre>
 </section>
 <section id="data-access-continued" class="slide level2">
 <h2>Data access continued</h2>
 <p>Single index will return values by indexing along only one dimension.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myMatrix[<span class="dv">2</span>]</code></pre></div>
-<pre><code>## [1] 1</code></pre>
+<pre><code>## [1] 3</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myMatrix[<span class="dv">22</span>]</code></pre></div>
-<pre><code>## [1] 56</code></pre>
+<pre><code>## [1] 41</code></pre>
 </section>
 <section id="matrix-summary" class="slide level2">
 <h2>Matrix summary</h2>
@@ -721,13 +721,13 @@ myOtherMatrix &lt;-<span class="st"> </span>myVector
 <pre><code>## [1] 5050</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colSums</span>(myMatrix)</code></pre></div>
 <pre><code>##   a   b   c   d   e   f   g   h   i   j 
-## 404 386 627 550 491 495 591 485 433 588</code></pre>
+## 592 597 420 509 462 475 564 544 365 522</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rowSums</span>(myMatrix)</code></pre></div>
 <pre><code>##   q   r   s   t   u   v   w   x   y   z 
-## 563 550 457 409 442 601 517 609 524 378</code></pre>
+## 451 481 460 519 537 493 630 400 546 533</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colMeans</span>(myMatrix)</code></pre></div>
 <pre><code>##    a    b    c    d    e    f    g    h    i    j 
-## 40.4 38.6 62.7 55.0 49.1 49.5 59.1 48.5 43.3 58.8</code></pre>
+## 59.2 59.7 42.0 50.9 46.2 47.5 56.4 54.4 36.5 52.2</code></pre>
 </section>
 <section id="more-than-two-dimensions" class="slide level2">
 <h2>More than two dimensions</h2>
@@ -1075,8 +1075,8 @@ df =<span class="st"> </span><span class="kw">sqlQuery</span>(myChannel, <span c
     </div>
   </div>
 
-  <script src="C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
-  <script src="C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+  <script src="libs/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="libs/reveal.js-3.3.0.1/js/reveal.js"></script>
 
   <script>
 
@@ -1096,8 +1096,8 @@ df =<span class="st"> </span><span class="kw">sqlQuery</span>(myChannel, <span c
 
         // Optional reveal.js plugins
         dependencies: [
-          { src: 'C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
-          { src: 'C:\Users\bfannin\Documents\raw_rpm\slides_out\data_files/reveal.js-3.3.0.1/plugin/zoom-js/zoom.js', async: true },
+          { src: 'libs/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+          { src: 'libs/reveal.js-3.3.0.1/plugin/zoom-js/zoom.js', async: true },
         ]
       });
     </script>

@@ -1,0 +1,282 @@
+---
+title: "Linear Models"
+output:
+  slidy_presentation:
+    duration: 45
+    fig_height: 3
+    fig_width: 6
+  beamer_presentation:
+    fonttheme: professionalfonts
+---
+
+## Load data
+
+We are going to use the famous Boston housing data. The goal is to predict the median house value in the suburbs of Boston, given characteristics about the surrounding area of each house.
+
+This data is supplied in the "MASS" R package so if we don't have this package installed we need to do so:
+
+```{r eval=TRUE}
+# install.packages("MASS")
+library(MASS)
+```
+
+Load in Boston data. This command creates a dataframe called "Boston":
+
+```{r eval=TRUE}
+data(Boston)
+```
+
+Check out its dimensions:
+
+```{r eval=TRUE}
+dim(Boston)
+```
+
+Look at the first few records and its structure:
+
+```{r eval=TRUE}
+head(Boston)
+str(Boston)
+```
+
+## Data Prep
+
+How many distinct values are in each column?
+
+We will use the lapply function:
+
+```{r eval=TRUE}
+distinctvals <- lapply(Boston, unique)
+
+lengthdistinctvals <- lapply(distinctvals, length)
+
+lengthdistinctvals <- unlist(lengthdistinctvals)
+lengthdistinctvals
+```
+
+Look at some bar plots:
+
+```{r eval=TRUE}
+barplot(table(Boston$chas))
+
+barplot(table(Boston$rad))
+```
+
+"chas" is actually a dummy variable whether the land bounds the Charles river, and "rad" is an index of accessibility to radial highways.
+
+These variables should be treated as categorical, not numeric. We should change the data types:
+
+```{r eval=TRUE}
+Boston$chas <- as.character(Boston$chas)
+Boston$rad <- as.character(Boston$rad)
+```
+
+## Exploratory Data Analysis (EDA)
+
+Diagnostics on medv:
+
+```{r eval=TRUE}
+summary(Boston$medv)
+hist(Boston$medv, breaks = 30)
+
+plot(sort(Boston$medv), main = "medv in ascending order", ylab = "medv")
+grid()
+```
+
+Look at a couple variables vs. medv:
+
+```{r eval=TRUE}
+plot(Boston$crim, Boston$medv, main = "crim vs. medv", xlab = "crim", ylab = "medv")
+grid()
+cor(Boston$crim, Boston$medv)
+
+plot(Boston$rm, Boston$medv, main = "rm vs. medv", xlab = "rm", ylab = "medv")
+grid()
+cor(Boston$rm, Boston$medv)
+```
+
+Look at correlations:
+
+```{r eval=TRUE}
+correlations <- cor(subset(Boston, select = -c(chas, rad)))
+correlations
+
+# install.packages("corrplot")
+library(corrplot)
+
+corrplot(correlations, method = "ellipse", type = "full", title = "Correlations", diag = TRUE, mar = c(2, 2, 2, 2))
+
+corrplot(correlations, method = "ellipse", type = "upper", title = "Correlations", diag = FALSE, mar = c(2, 2, 2, 2), addCoef.col = "black", number.cex = 0.7)
+```
+
+Although there are some high correlations, Let's keep all the variables and move forward.
+
+## Run linear regression model
+
+First, include all variables:
+
+```{r eval=TRUE}
+model0 <- lm(medv ~ ., data = Boston)
+summary(model0)
+# Adj R2 = 0.7396
+```
+
+Check out some preliminary diagnostics:
+
+```{r eval=TRUE}
+# par(mfrow = c(2,2))
+plot(model0)
+# par(mfrow = c(1,1))
+```
+
+"indus" & "age" (& maybe "rad") are not statistically significant. Exclude them:
+
+```{r eval=TRUE}
+model1 <- lm(medv ~ . -indus -age, data = Boston)
+summary(model1)
+# Adj R2 = 0.7405
+```
+
+Is model1 statistically better than model0?
+
+```{r eval=TRUE}
+anova(model1, model0)
+```
+
+The models are not statistically different.
+
+Let's try also removing "rad":
+
+```{r eval=TRUE}
+model2 <- lm(medv ~ . -indus -age -rad, data = Boston)
+summary(model2)
+# Adj R2 = 0.7234
+```
+
+Now "tax" doesn't look good, try removing that:
+
+```{r eval=TRUE}
+model3 <- lm(medv ~ . -indus -age -rad -tax, data = Boston)
+summary(model3)
+# Adj R2 = 0.7239
+```
+
+## Feature selection
+
+Why don't we just use forward selection, backward elimination and exhaustive search?
+
+Forward selection:
+
+```{r eval=TRUE}
+fwd <- stepAIC(model0, direction = "forward", trace = TRUE)
+
+fwd$anova
+```
+
+This didn't give us any different model than the model0 (the full model)
+
+Try backward elimination:
+
+```{r eval=TRUE}
+bkwd <- stepAIC(model0, direction = "backward", trace = TRUE)
+
+bkwd$anova
+```
+
+This eliminated "age" and "indus" as we did in model1 (Adj R2 = 0.7405)
+
+Try exhaustive search using the regsubsets from the leaps package:
+
+```{r eval=TRUE}
+# install.packages("leaps")
+library(leaps)
+
+exhaustive <- regsubsets(medv ~ ., data = Boston, nbest = 1)
+```
+
+Homework: Run this code and learn how to explore the results.
+
+## Diagnostics
+
+First, get predictions from the model:
+
+```{r eval=TRUE}
+pred <- predict(model1, newdata = Boston)
+```
+
+Plot actual vs. predicted values from our best linear regression model:
+
+```{r eval=TRUE}
+plot(Boston$medv, pred, main = "Actual vs. Predicted from Linear Regression", xlab = "medv", ylab = "pred")
+abline(0,1)
+grid()
+```
+
+## Interactions
+
+Let's add an interaction between "rm" & "lstat", and add up to a 10th degree polynomial curve transformation of "lstat":
+
+```{r eval=TRUE}
+model4 <- lm(medv ~ . +rm:lstat +poly(lstat, 10), data = Boston)
+summary(model4)
+# Adj R2 = 0.8129
+```
+
+Remove low p-value variables:
+
+```{r eval=TRUE}
+model5 <- lm(medv ~ . -zn -indus -age -rad +rm:lstat +poly(lstat, 5), data = Boston)
+summary(model5)
+# Adj R2 = 0.7991
+```
+
+Remove "tax":
+
+```{r eval=TRUE}
+model6 <- lm(medv ~ . -zn -indus -age -rad +rm:lstat +poly(lstat, 5) -tax, data = Boston)
+summary(model6)
+# Adj R2 = 0.7993
+```
+
+## Bonus material
+
+OK, I'm tired, let's move on to something more fun.
+
+Try a random forest algorithm out of the box:
+
+```{r eval=TRUE}
+# install.packages("randomForest")
+library(randomForest)
+
+rf <- randomForest(medv ~ ., data = Boston)
+```
+
+Look at model complexity:
+
+```{r eval=TRUE}
+plot(rf)
+```
+
+Get predictions:
+
+```{r eval=TRUE}
+pred.rf <- predict(rf, Boston)
+```
+
+Plot actual vs. predicted values from our best linear regression model:
+
+```{r eval=TRUE}
+plot(Boston$medv, pred.rf, main = "Actual vs. Predicted from Random Forest", xlab = "medv", ylab = "pred")
+abline(0,1)
+grid()
+cor(Boston$medv, pred.rf)^2
+```
+
+Compare results to our best linear model:
+
+```{r eval=TRUE}
+plot(Boston$medv, pred, main = "Actual vs. Predicted from Linear Regression", xlab = "medv", ylab = "pred")
+abline(0,1)
+grid()
+cor(Boston$medv, pred)^2
+```

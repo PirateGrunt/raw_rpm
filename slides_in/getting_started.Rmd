@@ -1,0 +1,124 @@
+---
+title: Getting Started
+output:
+  revealjs::revealjs_presentation:
+    center: no
+    css: ../css/revealOpts.css
+    reveal_plugins:
+    - notes
+    - zoom
+    self_contained: false
+    theme: solarized
+    transition: slide
+---
+
+```{r include=FALSE}
+source('common.R')
+```
+
+##  Options
+
+* Don't save history, or .Rdata
+* Panes
+* Editor color
+  
+## Other options
+
+* Code diagnostics
+* Change panel positions
+* Consider font and color
+* Autocompletion
+    
+## Script
+
+* Create a script
+* Save it, open it
+
+## Keyboard shortcuts
+
+* ALT+SHIFT+K
+
+My favories:
+
+* ALT+-
+* CTRL+ENTER
+* CTRL+1
+* CTRL+2
+* CTRL+SHIFT+M
+* CTRL+L
+* CTRL+SHIFT+N
+* CTRL+W
+* CTRL+SHIFT+F
+* CTRL+SHIFT+B
+
+## Code execution
+
+CTRL+ENTER
+
+90% of your code writing and execution will be done in scripts. Use the console for getting help or one-off operations like: package installation, light debugging.
+
+## Speaking of debugging
+
+R has a debugging framework. I rarely use it.
+
+The combination of environment pane and REPL does 98% of what I need. YMMV
+
+## The working directory
+
+```{r}
+getwd()
+```
+
+You will probably never have a good reason to call `setwd()`. Use a project instead.
+
+## Projects
+
+* Collect all of the files relevant to a project
+* Automatically set the working directory 
+* Intermediate stuff:
+  * Version control
+  * Package development
+  * CTRL-SHIFT-B
+  
+Let's all create one now.
+
+## Packages
+
+```{r eval=FALSE}
+install.packages('actuar')
+library(actuar)
+```
+
+Also have a look at the packages pane in RStudio.
+
+## Data in packages
+
+```{r eval=FALSE}
+data(package = 'Lahman')
+```
+
+## Installation vs. library
+
+1. `install.packages()` copies files to your computer.
+2. `library()` finds those files and loads them into memory.
+3. When you turn off your computer, the files are unloaded from memory.
+4. Files on your computer don't disappear when you turn off your computer.
+
+## Package installation folder
+
+```{r}
+.libPaths()
+```
+
+Create a "universal" library by creating a file called ".Renviron".
+
+```
+R_LIBS="~/Rlibs"
+```
+
+https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html
+
+## Exercise
+
+1. Create a universal library. Ensure that it's working by deleting one of the packages and reinstalling.
+2. Create an RStudio project to contain your work for this training.

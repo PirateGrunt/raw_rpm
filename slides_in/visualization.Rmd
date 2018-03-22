@@ -1,219 +1,250 @@
 ---
-title: "Advanced Visualization"
-output: 
-  slidy_presentation:
-    duration: 45
+title: "Visualization"
+output:
+  revealjs::revealjs_presentation:
+    center: no
+    css: ../css/revealOpts.css
+    reveal_plugins:
+    - notes
+    - zoom
+    self_contained: false
+    theme: solarized
+    transition: slide
 ---
 
-## Topics
+```{r include=FALSE}
+source('common.R')
+```
 
-* ggplot2
-* Maps
+# Base plotting
+
+## Base plotting
+
+```{r}
+library(raw)
+data("RegionExperience")
+
+plot(RegionExperience$PolicyYear, RegionExperience$NumClaims)
+```
+
+## Add labels
+
+```{r}
+plot(
+  RegionExperience$PolicyYear
+  , RegionExperience$NumClaims
+  , pch = 19
+  , xlab = 'Policy Year'
+  , ylab = '# of claims')
+```
+
+## Base plotting
+
+* Kinda ugly
+* Customization is possible, but tedious
+
+# ggplot
 
 ## ggplot2
 
-ggplot2 developed by Hadley Wickham, based on the "grammar of graphics"
-  
-Particularly well suited for multi-dimensional, multivariate analysis.
-
-Requires 3 things:
+gg =  "grammar of graphics" based on Leland Wilkinson
 
 1. Data
 2. Mapping
 2. Geometric layers
+3. Scales
+
+# Data
 
 ## Data
 
-```{r }
-set.seed(1234)
-N <- 30
-df <- data.frame(Cohort = c(rep("F", N), rep("M", N))
-                 , weight = c(rnorm(N, 150, 10), rnorm(N, 172, 10))
-                 , height = c(rnorm(N, 64, 10), rnorm(N, 70, 10))
-)
-
+```{r error = TRUE}
 library(ggplot2)
-basePlot <- ggplot(df)
+library(dplyr)
+plt_base <- ggplot(RegionExperience)
+
+plt_base
+
+data(COTOR2)
+ggplot(COTOR2)
 ```
 
-<div class="notes">
-Notice that we assigned the result of the function call to an object called `basePlot`. This means we don't automatically get output. Take a bit of time to have a look at what's contained in the `basePlot` object. 
-</div>
+## Data
+
+Data must use a data frame.
+
+```{r}
+ggplot(1:10)
+```
+
+# Mapping
 
 ## Mapping
 
-Mappings bind data to visual elements. These are added with the `ggplot2::aes` function. We add the mapping to the plot object with the addition operator.
+Mappings bind data to visual elements. Every data-derived visual element must be mapped to data.
 
 ```{r }
-basePlot <- basePlot + aes(x = height, y = weight)
+plt_base <- plt_base + aes(x = PolicyYear, y = NumClaims)
+
+plt_base <- ggplot(RegionExperience, aes(PolicyYear, NumClaims))
 ```
 
-We can map other aesthetic elements, as well. We'll also map the color of the graphic elements to the `Cohort` data element.
-
-```{r}
-basePlot <- basePlot + aes(color = Cohort)
-```
+# Layers
 
 ## Adding layers
 
-We're almost there. Although we have data and we've mapped to elements of a coordinate system, we haven't specified what the visual elements should be. The `geom_*` family of functions add geometric shapes. 
+Although we have data and we've mapped to elements of a coordinate system, we haven't specified what the visual elements should be. The `geom_*` family of functions add geometric shapes. 
 
 ```{r }
-basePlot <- basePlot + geom_point()
-basePlot
+plt_base <- plt_base + geom_point()
+plt_base
 ```
-
-## Typical geoms
-
-* geom_line
-* geom_point
-* geom_bar
-* geom_histogram
-* geom_density
-* geom_boxplot
-
-Lots of others for things like area plots, step functions, dotplots, violin plots, errorbars, etc.
 
 ## One step
 
-Typically we don't do this in steps.
-
 ```{r }
-plt <- ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point()
-plt
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point()
 ```
 
-## Nothing wrong with adding two layers
+## Try multiple layers
 
 ```{r }
-ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point() + geom_rug()
-ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point() + geom_density2d()
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_line()
 ```
+
+## Try that again
+
+```{r }
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_line(aes(color = Region))
+```
+
+## ggplot vs geom_X
+
+```
+ggplot(data, mapping)
+geom_X(mapping, data)
+```
+
+## Statistical smoothers
+
+```{r}
+RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumPolicies)) + 
+  geom_point() + 
+  geom_smooth(method = lm, aes(color = Region))
+```
+
+# Scales
+
+## Store a basic plot in an object
+
+```{r}
+plt <- RegionExperience %>% 
+  ggplot(aes(x = PolicyYear, y = NumClaims)) + 
+  geom_point()
+```
+
+## Change the y scale
+
+```{r}
+plt + scale_y_continuous(labels = scales::comma)
+```
+
+## Change the x breaks
+
+```{r}
+plt + scale_x_continuous(breaks = 2001:2010)
+```
+
+## Change the x breaks
+
+```{r}
+my_breaks <- function(lims) {
+  seq(ceiling(lims[1]), floor(lims[2]), by = 1)
+}
+plt + scale_x_continuous(breaks = my_breaks)
+```
+
+# Facets
 
 ## Facets
 
 Facets split the data into groups and draws a different plot for each group.
 
 ```{r}
-plt <- ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point() + facet_wrap(~ Cohort)
-
-plt <- ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point() + facet_wrap(~ weight)
-plt
+ggplot(RegionExperience, aes(x = PolicyYear, y = NumClaims, color = Region)) + 
+  geom_point() + 
+  facet_wrap(~ Region)
 ```
 
-## Statistical transformations
+# Non-data visual elements
 
-We can also add all manner of statistical smoothers.
+## Non-data visual elements
+
+* labels
+* gridlines
+* legend
+* axis ticks
+
+## Labels
 
 ```{r}
-plt <- ggplot(df, aes(x = height, y = weight, color = Cohort)) + geom_point() + geom_smooth(method = "lm")
-plt
+plt + labs(x = 'Policy year', y = '# of claims')
 ```
 
-See `? stat_smooth` for more on smoothers.
-
-## Scales
-
-Scales control how things render on the plot. We must scale our numbers to the plotting device (typically a section of a computer screen.) We can also map things like color and axes to data values and control formatting.
+## Gridlines
 
 ```{r}
-plt + scale_x_continuous(labels = scales::comma)
-plt + scale_x_continuous(labels = scales::unit_format(unit = "in", nsmall = 2))
+
 ```
 
-_Very_ detailed topic, particularly when we start talking about color. Your specific problem will likely require a bit of research and experimentation. StackOverflow.com is your friend.
+<!-- ## Your turn -->
 
-## Other visual elements
+<!-- 1. Create a scatter plot for policy year and number of claims -->
+<!-- 2. Color each point based on region -->
+<!-- 2. Add a linear smoother. Which region is showing the greatest increase in claims? -->
+<!-- 4. Form the policy frequency by taking the ratio of claims to policies. Plot this. -->
 
-Non-data elements are things like labels. Here's a sample of a few:
+<!-- Extra credit: -->
 
-* `xlab()`, `ylab()` -> `plt + ylab("This is my y label") + xlab("Here is an x label")`
-* `ggtitle()` ->  `plt + ggtitle("Title of my plot")`
-* `labs()` -> `plt + labs(x = "x-axis title", title = "My title")`
-* `theme_bw()`, `theme_minimal()` -> `plt + theme_bw()`
-* The `theme()` function gives complete control over all non-data related visual elements
-* Check out the `ggthemes` package
+<!-- 1. Use the state data to create a time series number of claims. Facet by region. -->
 
-We won't cover this here. 
+<!-- ## Answers -->
 
-## Your turn
+<!-- ```{r} -->
+<!-- library(raw) -->
+<!-- data("RegionExperience") -->
+<!-- plt1 <- ggplot(RegionExperience, aes(x = PolicyYear, y = NumClaims)) + geom_point() -->
+<!-- plt1 -->
 
-1. Create a scatter plot for policy year and number of claims
-2. Color each point based on region
-2. Add a linear smoother. Which region is showing the greatest increase in claims?
-4. Form the policy frequency by taking the ratio of claims to policies. Plot this.
+<!-- plt2 <- plt1 + aes(color = Region) -->
+<!-- plt2 -->
 
-Extra credit:
+<!-- plt3 <- plt2 + stat_smooth(method = "lm") -->
+<!-- plt3 -->
 
-1. Use the state data to create a time series number of claims. Facet by region.
+<!-- RegionExperience$Frequency <- with(RegionExperience, NumClaims / NumPolicies) -->
 
-## Answers
+<!-- plt4 <- ggplot(RegionExperience, aes(x = PolicyYear, y = Frequency, color = Region)) + geom_point() + geom_line() + stat_smooth(method = lm) -->
+<!-- plt4 -->
+<!-- ``` -->
 
-```{r}
-library(raw)
-data("RegionExperience")
-plt1 <- ggplot(RegionExperience, aes(x = PolicyYear, y = NumClaims)) + geom_point()
-plt1
-
-plt2 <- plt1 + aes(color = Region)
-plt2
-
-plt3 <- plt2 + stat_smooth(method = "lm")
-plt3
-
-RegionExperience$Frequency <- with(RegionExperience, NumClaims / NumPolicies)
-
-plt4 <- ggplot(RegionExperience, aes(x = PolicyYear, y = Frequency, color = Region)) + geom_point() + geom_line() + stat_smooth(method = lm)
-plt4
-```
-
-```{r}
-data("StateExperience")
-pltExtra <- ggplot(StateExperience, aes(x = PolicyYear, y = NumClaims, color = Postal)) + geom_point() + geom_line()
-pltExtra + facet_wrap(~ Region)
-```
-
-## Maps!
-
-```{r message = FALSE, warning = FALSE}
-library(maps)
-map('state')
-```
-
-## Hurricanes
-
-```{r }
-library(raw)
-data(Hurricane)
- 
-dfKatrina = subset(Hurricane, Name == 'KATRINA')
-dfKatrina = dfKatrina[dfKatrina$Year == max(dfKatrina$Year), ]
-
-dfHugo = subset(Hurricane, Name == 'HUGO')
-dfHugo = dfHugo[dfHugo$Year == max(dfHugo$Year), ]
- 
-dfDonna = Hurricane[Hurricane$Name == 'DONNA', ]
-dfDonna = dfDonna[dfDonna$Year == max(dfDonna$Year), ]
-```
-
-## Hurricanes
-
-```{r }
-map('state')
-points(dfKatrina$Longitude, dfKatrina$Latitude, pch=19, col = 'red')
-points(dfHugo$Longitude, dfHugo$Latitude, pch = 19, col = 'blue')
-points(dfDonna$Longitude, dfDonna$Latitude, pch = 19, col = 'green')
-```
+<!-- ```{r} -->
+<!-- data("StateExperience") -->
+<!-- pltExtra <- ggplot(StateExperience, aes(x = PolicyYear, y = NumClaims, color = Postal)) + geom_point() + geom_line() -->
+<!-- pltExtra + facet_wrap(~ Region) -->
+<!-- ``` -->
 
 ## Summary
 
-* `ggplot2` is difficult at first, but will repay your investment.
+* `ggplot2` is different at first, but will repay your investment.
 * Works very well with grouped data to color/facet points.
 * Fine-tuning things like axis labels can be a headache, but will get easier. Yes, Excel makes it easier to add data labels and change colors. `ggplot2` makes it easier to work with data.
-* Maps tend to be a killer viz. They use the same point and area logic as any other graphic.
-
-## Reference
-
-* http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
-* R Graphics Cookbook by Winston Chang
-* http://vita.had.co.nz/papers/layered-grammar.html

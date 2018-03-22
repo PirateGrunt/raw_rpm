@@ -1,6 +1,17 @@
 ---
 title: 'Introduction'
 author: "Brian A. Fannin"
+revealjs::revealjs_presentation:
+  center: no
+  css: ../css/revealOpts.css
+  reveal_plugins:
+  - notes
+  - zoom
+  self_contained: false
+  theme: solarized
+  transition: slide
+  df_print: paged
+  lib_dir: libs
 ---
 
 ##  {.flexbox .vcenter}
